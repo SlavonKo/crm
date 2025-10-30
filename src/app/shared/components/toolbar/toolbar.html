@@ -1,0 +1,25 @@
+<mat-toolbar>
+    <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>My App</span>
+    <span class="example-spacer"></span>
+
+    <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>dialpad</mat-icon>
+        <span>Redial</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>voicemail</mat-icon>
+        <span>Check voice mail</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>notifications_off</mat-icon>
+        <span>{{ 'navigation.darkTheme' | transloco }</span>
+      </button>
+    </mat-menu>
+</mat-toolbar>

@@ -22,6 +22,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^20.2.10",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
     "@angular/core": "^20.3.0",
@@ -29,6 +30,8 @@
     "@angular/material": "^20.2.10",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@jsverse/transloco": "^8.1.0",
+    "angular-icons": "^1.0.11",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -37,6 +40,10 @@
     "@angular/build": "^20.3.8",
     "@angular/cli": "^20.3.8",
     "@angular/compiler-cli": "^20.3.0",
+    "@ngneat/transloco": "^6.0.4",
+    "@ngneat/transloco-messageformat": "^5.0.0",
+    "@ngneat/transloco-persist-lang": "^5.0.0",
+    "@ngneat/transloco-preload-langs": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
