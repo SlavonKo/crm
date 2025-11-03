@@ -1,4 +1,4 @@
-
+@use 'assets/vars';
 // Include theming for Angular Material with `mat.theme()`.
 // This Sass mixin will define CSS variables that are used for styling Angular Material
 // components according to the Material 3 design spec.
@@ -37,3 +37,14 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.LIST {
+  .mat-mdc-menu-content {
+    background-color: var(--language-switcher-bg) !important;
+  }
+
+  .mat-mdc-menu-content, .mat-mdc-menu-content .mat-mdc-menu-item .mat-mdc-menu-item-text {
+    color: var(--language-switcher-text) !important;
+  }
+}

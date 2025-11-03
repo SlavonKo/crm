@@ -1,3 +1,70 @@
 .example-spacer {
     flex: 1 1 auto;
   }
+  
+  mat-toolbar {
+    background-color: var(--toolbar-bg);
+    color: var(--toolbar-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0 16px; 
+  
+    .example-spacer {
+      flex: 1 1 auto;
+    }
+  
+    // Стили для иконок-кнопок
+    button[mat-icon-button] {
+      color: var(--toolbar-color);
+      transition: background-color 0.2s ease-in-out;
+  
+      &:hover {
+        background-color: var(--toolbar-hover);
+      }
+  
+      &:active {
+        background-color: var(--toolbar-active);
+      }
+    }
+  
+    // Стили для заголовка приложения
+    span {
+      font-size: 1.25rem; 
+      font-weight: 500;
+    }
+  
+    // Стили для меню
+    mat-menu {
+      .mat-menu-panel {
+        background-color: var(--toolbar-bg);
+        color: var(--toolbar-color);
+      }
+  
+      button[mat-menu-item] {
+        color: var(--toolbar-color);
+        &:hover {
+          background-color: var(--toolbar-hover);
+        }
+        &:active {
+          background-color: var(--toolbar-active);
+        }
+        mat-icon {
+          color: var(--toolbar-color);
+        }
+        &[disabled] {
+          color: var(--toolbar-color);
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  .toolbar {
+    &__text {
+      color: var(--toolbar-color);
+    }
+    
+    &__item {
+      display: flex;
+      padding: 0 10px;
+    }
+  }

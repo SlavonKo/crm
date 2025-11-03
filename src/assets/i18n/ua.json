@@ -1,5 +1,10 @@
 {
   "navigation": {
+    "appTitle": "Мій додаток",
+    "language": "Мова",
+    "english": "Англійська",
+    "ukrainian": "Українська",
+    "russian": "Російська",
     "darkTheme": "Темна тема",
     "lightTheme": "Світла тема"
   }

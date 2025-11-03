@@ -1,0 +1,44 @@
+/* styles.scss */
+
+:root {
+    /* Светлая тема */
+    --toolbar-bg-light: #f5f5f5;
+    --toolbar-color-light: #333;
+    --toolbar-hover-light: #e0e0e0;
+    --toolbar-active-light: #c0c0c0;
+    --language-switcher-bg-light: #ffffff;
+    --language-switcher-text-light: #333333;
+  
+    /* Темная тема */
+    --toolbar-bg-dark: #343a40;
+    --toolbar-color-dark: #f8f9fa;
+    --toolbar-hover-dark: #495057;
+    --toolbar-active-dark: #6c757d;
+    --language-switcher-bg-dark: #212529;
+    --language-switcher-text-dark: #f8f9fa;
+  }
+  
+  body.light-theme {
+    --toolbar-bg: var(--toolbar-bg-light);
+    --toolbar-color: var(--toolbar-color-light);
+    --toolbar-hover: var(--toolbar-hover-light);
+    --toolbar-active: var(--toolbar-active-light);
+    --language-switcher-bg: var(--language-switcher-bg-light);
+    --language-switcher-text: var(--language-switcher-text-light);
+  }
+  
+  body.dark-theme {
+    --toolbar-bg: var(--toolbar-bg-dark);
+    --toolbar-color: var(--toolbar-color-dark);
+    --toolbar-hover: var(--toolbar-hover-dark);
+    --toolbar-active: var(--toolbar-active-dark);
+    --language-switcher-bg: var(--language-switcher-bg-dark);
+    --language-switcher-text: var(--language-switcher-text-dark)
+  }
+  
+  body {
+    --toolbar-bg: var(--toolbar-bg-light);
+    --toolbar-color: var(--toolbar-color-light);
+    --toolbar-hover: var(--toolbar-hover-light);
+    --toolbar-active: var(--toolbar-active-light);
+  }

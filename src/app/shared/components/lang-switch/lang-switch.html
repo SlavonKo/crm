@@ -1,0 +1,15 @@
+<button mat-icon-button [matTooltip]="'navigation.language' | transloco" [matMenuTriggerFor]="languageMenu" aria-label="Select language">
+    <mat-icon class="lang-switch__text">language</mat-icon>
+  </button>
+  
+  <mat-menu #languageMenu="matMenu" class="LIST">
+    <button mat-menu-item (click)="setLang(Lang.en)">
+      <span>{{ 'navigation.english' | transloco }}</span>
+    </button>
+    <button mat-menu-item (click)="setLang(Lang.ua)">
+      <span>{{ 'navigation.ukrainian' | transloco }}</span>
+    </button>
+    <button mat-menu-item (click)="setLang(Lang.ru)">
+      <span>{{ 'navigation.russian' | transloco }}</span>
+    </button>
+  </mat-menu>
