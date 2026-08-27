@@ -16,7 +16,7 @@ import { LANG_KEY, LANGS } from '../../../core/config';
 })
 export class LangSwitch implements OnInit {
   protected readonly translocoService = inject(TranslocoService);
-  currentLang: LANGS | string = localStorage?.['lang'];
+  currentLang: LANGS | string = localStorage?.['lang'] || LANGS.en;
   public readonly Lang = LANGS;
 
   ngOnInit(): void {
