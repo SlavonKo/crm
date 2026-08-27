@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TranslocoLoader, provideTransloco } from '@ngneat/transloco';
+import { TranslocoLoader, provideTransloco } from '@jsverse/transloco';
 
 @Injectable({ providedIn: 'root' })
 export class AppTranslocoLoader implements TranslocoLoader {
