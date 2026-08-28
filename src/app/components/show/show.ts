@@ -4,14 +4,14 @@ import { ApiService } from '../../core/api.service';
 
 @Component({
   selector: 'app-show',
-  imports: [MatIcon],
+  imports: [],
   templateUrl: './show.html',
   styleUrl: './show.scss',
 })
 export class Show {
   users: any[] = [];
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   show(): void {
     console.log('test');
@@ -19,7 +19,7 @@ export class Show {
   }
 
   async req() {
-    
+
     try {
       this.users = await this.apiService.getUsers();
       console.log(this.users);

@@ -1,0 +1,272 @@
+<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+  <!-- Navigation Header / Breadcrumbs -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="flex items-center gap-2 text-sm text-slate-500">
+      <a routerLink="/orders" class="hover:text-primary transition-colors flex items-center gap-1">
+        <mat-icon class="!w-4 !h-4 !text-base ARROW-BACK">arrow_back</mat-icon>
+        Back to Orders
+      </a>
+      <span>/</span>
+      <span class="text-slate-700 dark:text-slate-300 font-medium">Order Detail</span>
+    </div>
+
+    <!-- Actions / Status Menu -->
+    @if (store.activeOrder()) {
+      @let order = store.activeOrder()!;
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-slate-400 font-medium">Update Status:</span>
+        <button mat-flat-button [matMenuTriggerFor]="statusMenu" class="!rounded-xl"
+          [class]="getBadgeClass(order.status)">
+          {{ getStatusLabel(order.status) }}
+          <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #statusMenu="matMenu" class="LIST">
+          @for (opt of statusOptions; track opt.value) {
+            <button mat-menu-item (click)="onUpdateStatus(opt.value)">
+              {{ opt.label }}
+            </button>
+          }
+        </mat-menu>
+      </div>
+    }
+  </div>
+
+  @if (store.isLoading()) {
+    <div class="flex justify-center items-center py-20">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (store.error()) {
+    <div class="bg-red-50 text-red-600 p-4 rounded-xl border border-red-150">
+      <strong>Error loading order details:</strong> {{ store.error() }}
+    </div>
+  } @else if (store.activeOrder()) {
+    @let order = store.activeOrder()!;
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Left Panel: Client and Bike Info -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Order Header info -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-primary">Job Sheet</span>
+            <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100 mt-1">
+              {{ order.title }}
+            </h2>
+            <p class="text-xs text-slate-400 mt-1 font-mono">ID: {{ order.id }}</p>
+          </div>
+
+          @if (order.description) {
+            <div class="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl text-sm text-slate-650 leading-relaxed border border-slate-100 dark:border-slate-800/40">
+              {{ order.description }}
+            </div>
+          }
+        </mat-card>
+
+        <!-- Client info -->
+        @if (client()) {
+          <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Client</h3>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-base uppercase">
+                {{ client()!.firstName.slice(0,1) }}{{ client()!.lastName.slice(0,1) }}
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                  {{ client()!.firstName }} {{ client()!.lastName }}
+                </p>
+                <p class="text-xs text-slate-500">{{ client()!.phone }}</p>
+              </div>
+            </div>
+          </mat-card>
+        }
+
+        <!-- Motorcycle info -->
+        @if (motorcycle()) {
+          <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Motorcycle</h3>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/20 text-sky-600 flex items-center justify-center">
+                <mat-icon>two_wheeler</mat-icon>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-800 dark:text-slate-100">
+                  {{ motorcycle()!.make }} {{ motorcycle()!.model }}
+                </p>
+                <p class="text-xs text-slate-500 font-mono">VIN: {{ motorcycle()!.vin }}</p>
+              </div>
+            </div>
+          </mat-card>
+        }
+      </div>
+
+      <!-- Right Panel: Breakdown & AI Assistant -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Job Details Breakdown -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-6">
+          <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100">
+            Work Breakdown
+          </h2>
+
+          <!-- Labor Items -->
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Labor Items</h3>
+            @if (order.laborItems.length === 0) {
+              <p class="text-sm italic text-slate-400">No labor entries recorded.</p>
+            } @else {
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-slate-600 dark:text-slate-350">
+                  <thead>
+                    <tr class="border-b border-slate-100 dark:border-slate-800/80 text-xs uppercase text-slate-400 font-semibold">
+                      <th class="pb-2">Description</th>
+                      <th class="pb-2 text-right">Hours</th>
+                      <th class="pb-2 text-right">Rate</th>
+                      <th class="pb-2 text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
+                    @for (labor of order.laborItems; track labor.description) {
+                      <tr>
+                        <td class="py-2.5 font-medium">{{ labor.description }}</td>
+                        <td class="py-2.5 text-right">{{ labor.hours | number:'1.1-2' }}h</td>
+                        <td class="py-2.5 text-right">{{ labor.ratePerHour | uah }}</td>
+                        <td class="py-2.5 text-right font-semibold text-slate-800 dark:text-slate-200">{{ labor.total | uah }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+
+          <!-- Parts Used -->
+          <div class="space-y-3 border-t border-slate-100 dark:border-slate-800/80 pt-6">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Parts Used</h3>
+            @if (order.partsUsed.length === 0) {
+              <p class="text-sm italic text-slate-400">No parts used recorded.</p>
+            } @else {
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-slate-600 dark:text-slate-350">
+                  <thead>
+                    <tr class="border-b border-slate-100 dark:border-slate-800/80 text-xs uppercase text-slate-400 font-semibold">
+                      <th class="pb-2">Part Name / SKU</th>
+                      <th class="pb-2 text-right">Qty</th>
+                      <th class="pb-2 text-right">Unit Price</th>
+                      <th class="pb-2 text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
+                    @for (part of order.partsUsed; track part.name) {
+                      <tr>
+                        <td class="py-2.5">
+                          <div class="font-medium text-slate-800 dark:text-slate-200">{{ part.name }}</div>
+                          <div class="text-[10px] text-slate-400 font-mono tracking-wide uppercase">{{ part.sku }}</div>
+                        </td>
+                        <td class="py-2.5 text-right">{{ part.quantity }}</td>
+                        <td class="py-2.5 text-right">{{ part.unitPrice | uah }}</td>
+                        <td class="py-2.5 text-right font-semibold text-slate-800 dark:text-slate-200">{{ part.total | uah }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+
+          <!-- Totals Breakdown -->
+          <div class="border-t border-slate-100 dark:border-slate-800/80 pt-6 flex flex-col items-end space-y-2 text-sm">
+            <div class="flex justify-between w-full max-w-xs">
+              <span class="text-slate-400">Labor Subtotal:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">{{ order.subtotalLabor | uah }}</span>
+            </div>
+            <div class="flex justify-between w-full max-w-xs">
+              <span class="text-slate-400">Parts Subtotal:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">{{ order.subtotalParts | uah }}</span>
+            </div>
+            <div class="flex justify-between w-full max-w-xs">
+              <span class="text-slate-400">Tax Rate:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">{{ order.taxRate * 100 }}%</span>
+            </div>
+            <div class="flex justify-between w-full max-w-xs border-t border-slate-100 dark:border-slate-800/80 pt-2 text-lg">
+              <span class="font-bold text-slate-800 dark:text-slate-100">Total Invoice:</span>
+              <span class="font-black text-primary">{{ order.totalCost | uah }}</span>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- AI Panel Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- AI Diagnostic Panel -->
+          <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="flex items-center gap-2">
+                <mat-icon class="text-indigo-500">psychology</mat-icon>
+                <h3 class="font-bold text-slate-800 dark:text-slate-100">AI Diagnostic Advice</h3>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Generate troubleshooting tips and checklists based on symptoms and bike stats.
+              </p>
+
+              @if (aiAdvice()) {
+                <div class="bg-indigo-50/50 dark:bg-indigo-950/20 text-indigo-950 dark:text-indigo-250 p-4 rounded-xl text-xs leading-relaxed border border-indigo-100 dark:border-indigo-900/50 max-h-[220px] overflow-y-auto font-medium">
+                  {{ aiAdvice() }}
+                </div>
+              }
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+              <button mat-stroked-button color="primary" class="w-full !rounded-xl" [disabled]="aiService.isLoading()" (click)="fetchAiAdvice()">
+                @if (aiService.isLoading() && !safeReceiptHtml()) {
+                  <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>
+                } @else {
+                  <mat-icon class="mr-1">auto_awesome</mat-icon>
+                }
+                Ask AI Assistant
+              </button>
+            </div>
+          </mat-card>
+
+          <!-- AI Receipt Panel -->
+          <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="flex items-center gap-2">
+                <mat-icon class="text-violet-500">receipt_long</mat-icon>
+                <h3 class="font-bold text-slate-800 dark:text-slate-100">AI Formatted Receipt</h3>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Compile a professional, print-ready HTML customer receipt layout using Groq LLM.
+              </p>
+
+              @if (safeReceiptHtml()) {
+                <div class="bg-slate-50 dark:bg-slate-950/40 p-4 rounded-xl border border-slate-200/60 dark:border-slate-800/60 text-xs overflow-y-auto max-h-[220px]">
+                  <div [innerHTML]="safeReceiptHtml()!"></div>
+                </div>
+              }
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+              <button mat-flat-button color="primary" class="w-full !rounded-xl" [disabled]="aiService.isLoading()" (click)="generateAiReceipt()">
+                @if (aiService.isLoading() && safeReceiptHtml()) {
+                  <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>
+                } @else {
+                  <mat-icon class="mr-1">receipt</mat-icon>
+                }
+                {{ safeReceiptHtml() ? 'Regenerate Receipt' : 'Generate HTML Receipt' }}
+              </button>
+            </div>
+          </mat-card>
+
+        </div>
+
+      </div>
+
+    </div>
+  } @else {
+    <div class="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl">
+      <mat-icon class="text-slate-400 !w-12 !h-12 !text-5xl mb-4">error_outline</mat-icon>
+      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">Order not found</h3>
+      <p class="text-slate-500 text-sm mt-1">The requested job order could not be located.</p>
+    </div>
+  }
+</div>

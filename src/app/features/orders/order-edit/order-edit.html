@@ -1,0 +1,240 @@
+<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+  <!-- Header -->
+  <div class="flex items-center gap-2 text-sm text-slate-500">
+    <a routerLink="/orders" class="hover:text-primary transition-colors flex items-center gap-1">
+      <mat-icon class="!w-4 !h-4 !text-base ARROW-BACK">arrow_back</mat-icon>
+      Back to Orders
+    </a>
+    <span>/</span>
+    <span class="text-slate-700 dark:text-slate-300 font-medium">New Order</span>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-8" *ngIf="form">
+    
+    <!-- Left Column: Assignment and AI Assistant -->
+    <div class="flex-1 space-y-6 lg:max-w-md">
+      
+      <!-- Assignment Card -->
+      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+        <h2 class="text-lg font-bold text-slate-850 dark:text-slate-100 flex items-center gap-2">
+          <mat-icon class="text-primary">assignment_ind</mat-icon>
+          1. Assignment
+        </h2>
+
+        <div [formGroup]="form" class="flex flex-col gap-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Select Client</mat-label>
+            <mat-select formControlName="clientId" (selectionChange)="onClientSelect()" required>
+              @for (c of clientsStore.clients(); track c.id) {
+                <mat-option [value]="c.id">{{ c.firstName }} {{ c.lastName }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Select Motorcycle</mat-label>
+            <mat-select formControlName="motorcycleId" required [disabled]="!form.get('clientId')?.value">
+              @for (m of clientMotorcycles(); track m.id) {
+                <mat-option [value]="m.id">{{ m.make }} {{ m.model }} ({{ m.year }})</mat-option>
+              }
+            </mat-select>
+            @if (!form.get('clientId')?.value) {
+              <mat-hint>Please select a client first</mat-hint>
+            }
+          </mat-form-field>
+        </div>
+      </mat-card>
+
+      <!-- AI Prompt Card -->
+      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+        <h2 class="text-lg font-bold text-slate-850 dark:text-slate-100 flex items-center gap-2">
+          <mat-icon class="text-indigo-500">auto_awesome</mat-icon>
+          2. AI Draft Assitant
+        </h2>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Describe the symptoms or repairs in plain text. The AI will translate it into a formatted title, description, estimated labor items, and parts.
+        </p>
+
+        <div class="space-y-4">
+          <mat-form-field appearance="outline" class="w-full !mb-0">
+            <mat-label>Describe repair work...</mat-label>
+            <textarea matInput [value]="aiPromptInput()" (input)="aiPromptInput.set($any($event.target).value)" 
+              placeholder="e.g. oil change + filter swap, replace rear brake pads, estimated 1.5 hours total..." rows="4"></textarea>
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" class="w-full !rounded-xl" 
+            [disabled]="aiService.isLoading() || !aiPromptInput().trim()" (click)="runAiDraft()">
+            @if (aiService.isLoading()) {
+              <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>
+            } @else {
+              <mat-icon class="mr-1">psychology</mat-icon>
+            }
+            Draft with AI Assistant
+          </button>
+        </div>
+      </mat-card>
+
+      <!-- General Info Card -->
+      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+        <h2 class="text-lg font-bold text-slate-850 dark:text-slate-100 flex items-center gap-2">
+          <mat-icon class="text-slate-600">info_outline</mat-icon>
+          3. General Info
+        </h2>
+
+        <div [formGroup]="form" class="space-y-3">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Order Title</mat-label>
+            <input matInput formControlName="title" placeholder="e.g. Annual Maintenance" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Detailed Description</mat-label>
+            <textarea matInput formControlName="description" placeholder="Diagnostic details or service guidelines..." rows="3"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-card>
+
+    </div>
+
+    <!-- Right Column: Line Items and Totals -->
+    <div class="flex-1 space-y-6">
+      
+      <!-- Labor & Parts Lines Card -->
+      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-6">
+        <div [formGroup]="form" class="space-y-6">
+          
+          <!-- Labor Lines -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <mat-icon class="text-slate-450">handyman</mat-icon>
+                Labor Items
+              </h3>
+              <button mat-stroked-button color="primary" type="button" class="!rounded-lg" (click)="addLaborItem()">
+                <mat-icon class="mr-0.5">add</mat-icon> Add Labor
+              </button>
+            </div>
+
+            <div formArrayName="laborItems" class="space-y-4">
+              @if (laborItems.length === 0) {
+                <p class="text-xs text-slate-400 italic">No labor items added yet.</p>
+              }
+              
+              @for (item of laborItems.controls; track $index) {
+                <div [formGroupName]="$index" class="flex flex-col sm:flex-row items-start gap-3 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40">
+                  <mat-form-field appearance="outline" class="flex-1 w-full" subscriptSizing="dynamic">
+                    <mat-label>Labor Description</mat-label>
+                    <input matInput formControlName="description" required>
+                  </mat-form-field>
+
+                  <div class="flex gap-3 w-full sm:w-auto">
+                    <mat-form-field appearance="outline" class="w-24" subscriptSizing="dynamic">
+                      <mat-label>Hours</mat-label>
+                      <input matInput type="number" formControlName="hours" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-28" subscriptSizing="dynamic">
+                      <mat-label>Rate</mat-label>
+                      <input matInput type="number" formControlName="ratePerHour" required>
+                    </mat-form-field>
+                    
+                    <button mat-icon-button color="warn" class="mt-1" (click)="removeLaborItem($index)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Parts Lines -->
+          <div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-6">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <mat-icon class="text-slate-450">inventory_2</mat-icon>
+                Parts Used
+              </h3>
+              <button mat-stroked-button color="primary" type="button" class="!rounded-lg" (click)="addPartUsed()">
+                <mat-icon class="mr-0.5">add</mat-icon> Add Part
+              </button>
+            </div>
+
+            <div formArrayName="partsUsed" class="space-y-4">
+              @if (partsUsed.length === 0) {
+                <p class="text-xs text-slate-400 italic">No parts added yet.</p>
+              }
+
+              @for (item of partsUsed.controls; track $index) {
+                <div [formGroupName]="$index" class="flex flex-col sm:flex-row items-start gap-3 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40">
+                  <div class="flex-1 w-full space-y-2">
+                    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                      <mat-label>Part Name</mat-label>
+                      <input matInput formControlName="name" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-full text-xs font-mono" subscriptSizing="dynamic">
+                      <mat-label>SKU (Optional)</mat-label>
+                      <input matInput formControlName="sku">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="flex gap-3 w-full sm:w-auto">
+                    <mat-form-field appearance="outline" class="w-20" subscriptSizing="dynamic">
+                      <mat-label>Qty</mat-label>
+                      <input matInput type="number" formControlName="quantity" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-28" subscriptSizing="dynamic">
+                      <mat-label>Price</mat-label>
+                      <input matInput type="number" formControlName="unitPrice" required>
+                    </mat-form-field>
+
+                    <button mat-icon-button color="warn" class="mt-1" (click)="removePartUsed($index)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+        </div>
+      </mat-card>
+
+      <!-- Totals & Actions Card -->
+      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Pricing Summary</h3>
+        
+        <div class="space-y-2 text-sm border-b border-slate-100 dark:border-slate-800/80 pb-4">
+          <div class="flex justify-between">
+            <span class="text-slate-400">Labor Subtotal:</span>
+            <span class="font-medium text-slate-700 dark:text-slate-350">{{ liveSubtotalLabor() | uah }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Parts Subtotal:</span>
+            <span class="font-medium text-slate-700 dark:text-slate-350">{{ liveSubtotalParts() | uah }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Estimated VAT:</span>
+            <span class="font-medium text-slate-700 dark:text-slate-350">20%</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <span class="text-base font-bold text-slate-800 dark:text-slate-100">Estimated Total:</span>
+          <span class="text-3xl font-black text-primary">{{ liveTotal() | uah }}</span>
+        </div>
+
+        <!-- Submit actions -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+          <button mat-button type="button" routerLink="/orders">Cancel</button>
+          <button mat-flat-button color="primary" type="button" class="!rounded-xl"
+            [disabled]="form.invalid || store.isLoading()" (click)="onSave()">
+            Create Work Order
+          </button>
+        </div>
+      </mat-card>
+
+    </div>
+
+  </div>
+</div>

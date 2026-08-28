@@ -1,32 +1,40 @@
-<mat-toolbar class="toolbar">
-  <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon">
-    <mat-icon class="toolbar__text">menu</mat-icon>
-  </button>
-  <span>{{ 'navigation.appTitle' | transloco }}</span>
-  <span class="example-spacer"></span>
-  <div class="toolbar__item">
-    <app-theme-switch></app-theme-switch>
-  </div>
-  <div class="toolbar__item">
-    <app-lang-switch></app-lang-switch>
-  </div>
-  <div class="toolbar__item">
-    <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-      <mat-icon class="toolbar__text">settings</mat-icon>
-    </button>
-  </div>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item>
-      <mat-icon>dialpad</mat-icon>
-      <span>Redial</span>
-    </button>
-    <button mat-menu-item disabled>
-      <mat-icon>voicemail</mat-icon>
-      <span>Check voice mail</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>notifications_off</mat-icon>
-      <span>{{ 'navigation.darkTheme' | transloco }}</span>
-    </button>
-  </mat-menu>
-</mat-toolbar>
+@if (auth.isAuthenticated()) {
+  <mat-toolbar class="toolbar">
+
+    <!-- Logo + nav links -->
+    <div class="flex items-center gap-1">
+      <mat-icon class="text-indigo-500 mr-1">two_wheeler</mat-icon>
+      <span class="font-bold text-sm mr-4 hidden sm:inline">{{ 'navigation.appTitle' | transloco }}</span>
+
+      <a mat-button routerLink="/orders"    routerLinkActive="bg-white/10" class="!rounded-lg">Замовлення</a>
+      <a mat-button routerLink="/clients"   routerLinkActive="bg-white/10" class="!rounded-lg">Клієнти</a>
+      <a mat-button routerLink="/inventory" routerLinkActive="bg-white/10" class="!rounded-lg">Склад</a>
+      <a mat-button routerLink="/calendar"  routerLinkActive="bg-white/10" class="!rounded-lg">Календар</a>
+    </div>
+
+    <span class="flex-1"></span>
+
+    <!-- Right side -->
+    <div class="flex items-center gap-1">
+      <app-theme-switch></app-theme-switch>
+      <app-lang-switch></app-lang-switch>
+
+      <!-- User chip + logout -->
+      <div class="flex items-center gap-2 ml-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+        <span class="text-sm text-slate-500 dark:text-slate-400 hidden md:inline">
+          {{ auth.currentUser()?.phoneNumber }}
+        </span>
+        <button
+          mat-icon-button
+          (click)="signOut()"
+          matTooltip="Вийти"
+          aria-label="Вийти з системи"
+          class="text-slate-500 hover:text-red-500"
+        >
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    </div>
+
+  </mat-toolbar>
+}

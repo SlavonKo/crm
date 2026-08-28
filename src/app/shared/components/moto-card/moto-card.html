@@ -1,0 +1,74 @@
+<mat-card class="relative overflow-hidden transition-all duration-200 hover:shadow-lg border border-slate-200/60 dark:border-slate-800/60 bg-white dark:bg-slate-900 rounded-2xl p-5 flex flex-col justify-between h-full">
+  <!-- Card Header -->
+  <div class="flex items-start justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 line-clamp-1">
+        {{ displayTitle() }}
+      </h3>
+      <p class="text-xs text-slate-500 font-mono tracking-wider mt-0.5 uppercase">
+        VIN: {{ motorcycle().vin }}
+      </p>
+    </div>
+    
+    <!-- Status Badge -->
+    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+      [class.bg-emerald-550/10]="status() === 'Active'"
+      [class.text-emerald-600]="status() === 'Active'"
+      [class.bg-indigo-500/10]="status() === 'In Workshop'"
+      [class.text-indigo-600]="status() === 'In Workshop'"
+      [class.bg-amber-500/10]="status() === 'Pending'"
+      [class.text-amber-600]="status() === 'Pending'"
+      [class.bg-slate-100]="status() === 'Archived'"
+      [class.text-slate-600]="status() === 'Archived'">
+      {{ status() }}
+    </span>
+  </div>
+
+  <!-- Card Body: Service Info -->
+  <div class="space-y-2 mb-6">
+    <div class="flex items-center justify-between text-sm">
+      <span class="text-slate-500 dark:text-slate-400">Current Mileage:</span>
+      <span class="font-semibold text-slate-700 dark:text-slate-200">
+        {{ motorcycle().currentMileage | number }} km
+      </span>
+    </div>
+
+    <div class="flex items-center justify-between text-sm">
+      <span class="text-slate-500 dark:text-slate-400">Last Service:</span>
+      <span class="font-semibold text-slate-700 dark:text-slate-200">
+        @if (lastService()) {
+          {{ lastService()!.date | date:'dd MMM yyyy' }}
+        } @else {
+          <span class="text-slate-400 italic">No service history</span>
+        }
+      </span>
+    </div>
+
+    <div class="flex items-center justify-between text-sm">
+      <span class="text-slate-500 dark:text-slate-400">Next Service:</span>
+      <span class="font-semibold text-primary">
+        {{ nextServiceMileage() | number }} km
+      </span>
+    </div>
+  </div>
+
+  <!-- Card Footer: Quick Actions -->
+  <div class="flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800/80 pt-4 mt-auto">
+    @if (!motorcycle().isArchived) {
+      <button mat-button color="primary" class="!rounded-lg" (click)="newOrder.emit(motorcycle())">
+        <mat-icon class="mr-1">add_shopping_cart</mat-icon>
+        New Order
+      </button>
+
+      <button mat-icon-button class="text-slate-500 hover:text-slate-700" title="Edit Info" (click)="editInfo.emit(motorcycle())">
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <button mat-icon-button color="warn" title="Archive Bike" (click)="archive.emit(motorcycle())">
+        <mat-icon>archive</mat-icon>
+      </button>
+    } @else {
+      <span class="text-xs italic text-slate-400 py-2">Archived on {{ motorcycle().archivedAt | date:'dd MMM yyyy' }}</span>
+    }
+  </div>
+</mat-card>

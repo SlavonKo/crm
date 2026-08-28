@@ -1,0 +1,162 @@
+<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
+        Warehouse & Parts Inventory
+      </h1>
+      <p class="text-sm text-slate-500 mt-1">
+        Track stock counts, monitor thresholds, locate items, and manage supplier info.
+      </p>
+    </div>
+
+    <button mat-flat-button color="primary" class="!rounded-xl !py-5" (click)="openAddItemDialog()">
+      <mat-icon class="mr-1">add_box</mat-icon>
+      Add Part / Item
+    </button>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-5 flex items-center gap-4">
+      <div class="p-3 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-650 rounded-xl">
+        <mat-icon class="!w-6 !h-6 !text-2xl">inventory_2</mat-icon>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Total Items</p>
+        <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">
+          {{ store.items().length }}
+        </h3>
+      </div>
+    </mat-card>
+
+    <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-5 flex items-center gap-4 border-l-4 border-l-red-500">
+      <div class="p-3 bg-red-50 dark:bg-red-950/20 text-red-650 rounded-xl">
+        <mat-icon class="!w-6 !h-6 !text-2xl">gpp_maybe</mat-icon>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Low Stock Alerts</p>
+        <h3 class="text-2xl font-black text-red-600 dark:text-red-450">
+          {{ store.lowStockItems().length }}
+        </h3>
+      </div>
+    </mat-card>
+
+    <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-5 flex items-center gap-4">
+      <div class="p-3 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 rounded-xl">
+        <mat-icon class="!w-6 !h-6 !text-2xl">account_balance_wallet</mat-icon>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider font-semibold">Total Stock Value</p>
+        <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">
+          {{ store.totalStockValue() | uah }}
+        </h3>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Search & Alert Banner -->
+  <div class="space-y-4">
+    <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
+      <mat-form-field appearance="outline" class="w-full sm:max-w-md !mb-0" subscriptSizing="dynamic">
+        <mat-icon matPrefix class="text-slate-400">search</mat-icon>
+        <mat-label>Search inventory...</mat-label>
+        <input matInput [value]="store.searchQuery()" (input)="onSearchChange($event)" placeholder="Search by name, SKU or brand...">
+      </mat-form-field>
+    </div>
+
+    <!-- Low Stock warning alert banner -->
+    @if (store.lowStockItems().length > 0) {
+      <div class="bg-red-50 text-red-700 p-4 rounded-2xl border border-red-150 flex items-start gap-3">
+        <mat-icon class="text-red-600 mt-0.5">warning</mat-icon>
+        <div>
+          <h4 class="font-bold text-sm">Low Stock Alert</h4>
+          <p class="text-xs mt-0.5">
+            {{ store.lowStockItems().length }} items are at or below minimum threshold. Please order restock from suppliers soon.
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Inventory Table/Grid -->
+  @if (store.isLoading()) {
+    <div class="flex justify-center items-center py-20">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (store.error()) {
+    <div class="bg-red-50 text-red-600 p-4 rounded-xl border border-red-150">
+      <strong>Error loading items:</strong> {{ store.error() }}
+    </div>
+  } @else if (store.filteredItems().length === 0) {
+    <div class="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
+      <mat-icon class="text-slate-400 !w-12 !h-12 !text-5xl mb-4">inventory</mat-icon>
+      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">No items found</h3>
+      <p class="text-slate-500 text-sm mt-1">Try modifying your query or create a new part record.</p>
+    </div>
+  } @else {
+    <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-0">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-slate-650 dark:text-slate-300">
+          <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/80 text-xs uppercase text-slate-400 font-bold">
+            <tr>
+              <th class="p-4 pl-6">Part Info</th>
+              <th class="p-4">Category</th>
+              <th class="p-4 text-right">Price</th>
+              <th class="p-4 text-center">Stock Level</th>
+              <th class="p-4 text-center">Location</th>
+              <th class="p-4 text-right pr-6">Stock Adjust / Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+            @for (item of store.filteredItems(); track item.id) {
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-850/20">
+                <td class="p-4 pl-6">
+                  <div class="font-bold text-slate-800 dark:text-slate-100">{{ item.name }}</div>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    @if (item.brand) {
+                      <span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold px-1.5 py-0.5 rounded">{{ item.brand }}</span>
+                    }
+                    <span class="text-[10px] text-slate-400 font-mono tracking-wider uppercase">SKU: {{ item.sku }}</span>
+                  </div>
+                </td>
+                <td class="p-4 text-slate-500 font-medium">
+                  {{ item.category }}
+                </td>
+                <td class="p-4 text-right font-semibold text-slate-800 dark:text-slate-200">
+                  {{ item.unitPrice | uah }}
+                </td>
+                <td class="p-4 text-center">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+                    [class.bg-emerald-555/10]="item.quantity > item.minThreshold"
+                    [class.text-emerald-600]="item.quantity > item.minThreshold"
+                    [class.bg-red-500/10]="item.quantity <= item.minThreshold"
+                    [class.text-red-650]="item.quantity <= item.minThreshold">
+                    {{ item.quantity }} in stock (Min: {{ item.minThreshold }})
+                  </span>
+                </td>
+                <td class="p-4 text-center font-mono text-xs text-slate-500">
+                  {{ item.location || 'N/A' }}
+                </td>
+                <td class="p-4 text-right pr-6">
+                  <div class="flex items-center justify-end gap-1">
+                    <button mat-button class="!min-w-0 !p-1.5 !h-8 !w-8 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500" title="Consume 1" [disabled]="item.quantity <= 0" (click)="adjustQty(item.id, -1)">
+                      -1
+                    </button>
+                    <button mat-button class="!min-w-0 !p-1.5 !h-8 !w-8 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500 mr-2" title="Restock 1" (click)="adjustQty(item.id, 1)">
+                      +1
+                    </button>
+
+                    <button mat-icon-button color="warn" title="Delete Part" (click)="deleteItem(item.id)">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-card>
+  }
+</div>

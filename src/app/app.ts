@@ -1,15 +1,15 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { Toolbar } from './shared/components/toolbar/toolbar';
-import { RouterOutlet } from "@angular/router";
-import { Show } from "./components/show/show";
+import { AuthService } from './core/auth/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [Toolbar, RouterOutlet, Show],
+  imports: [Toolbar, RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('start');
+  readonly auth = inject(AuthService);
 }

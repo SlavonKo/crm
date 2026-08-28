@@ -24,14 +24,17 @@ export class LangSwitch implements OnInit {
   }
 
   initLang(): void {
-    this.currentLang = localStorage?.[LANG_KEY];
+    const stored = localStorage?.getItem(LANG_KEY);
+    this.currentLang = stored && Object.values(LANGS).includes(stored as LANGS)
+      ? (stored as LANGS)
+      : LANGS.en;
     this.translocoService.setActiveLang(this.currentLang);
+    localStorage?.setItem(LANG_KEY, this.currentLang);
   }
-
 
   setLang(lang: LANGS): void {
     this.currentLang = lang;
     this.translocoService.setActiveLang(lang);
-    localStorage.setItem('lang', this.currentLang);
+    localStorage?.setItem(LANG_KEY, this.currentLang);
   }
 }

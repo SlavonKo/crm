@@ -1,0 +1,55 @@
+<div class="min-h-screen flex items-center justify-center p-4 bg-slate-50 dark:bg-slate-950">
+  <mat-card class="w-full max-w-sm border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl !shadow-xl">
+    <div class="p-8 space-y-6">
+
+      <!-- Logo / title -->
+      <div class="text-center space-y-1">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 mb-3">
+          <mat-icon class="!text-white !text-3xl">two_wheeler</mat-icon>
+        </div>
+        <h1 class="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
+          MotoWorkshop CRM
+        </h1>
+        <p class="text-sm text-slate-400">
+          Введіть номер телефону для входу
+        </p>
+      </div>
+
+      <!-- Error -->
+      @if (authService.authError()) {
+        <div class="flex items-center gap-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 p-3 rounded-xl border border-red-200 dark:border-red-800 text-sm">
+          <mat-icon class="!text-base shrink-0">error_outline</mat-icon>
+          {{ authService.authError() }}
+        </div>
+      }
+
+      <!-- Form -->
+      <form [formGroup]="phoneForm" (ngSubmit)="onLogin()" class="space-y-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Номер телефону</mat-label>
+          <input
+            matInput
+            formControlName="phone"
+            placeholder="+380671234567"
+            inputmode="tel"
+            autocomplete="tel"
+          >
+          <mat-icon matSuffix class="text-slate-400">phone</mat-icon>
+          <mat-error *ngIf="phoneForm.get('phone')?.hasError('required')">Обов'язкове поле</mat-error>
+          <mat-error *ngIf="phoneForm.get('phone')?.hasError('pattern')">Невірний формат номера</mat-error>
+        </mat-form-field>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="w-full !rounded-xl !h-12 !text-base font-semibold"
+          [disabled]="phoneForm.invalid"
+        >
+          Увійти
+        </button>
+      </form>
+
+    </div>
+  </mat-card>
+</div>
