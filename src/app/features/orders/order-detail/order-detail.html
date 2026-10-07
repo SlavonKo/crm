@@ -3,7 +3,7 @@
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div class="flex items-center gap-2 text-sm text-slate-500">
       <a routerLink="/orders" class="hover:text-primary transition-colors flex items-center gap-1">
-        <mat-icon class="!w-4 !h-4 !text-base ARROW-BACK">arrow_back</mat-icon>
+        <mat-icon class="!w-4 !h-4 !text-base">arrow_back</mat-icon>
         Back to Orders
       </a>
       <span>/</span>
@@ -20,7 +20,7 @@
           {{ getStatusLabel(order.status) }}
           <mat-icon class="ml-1">arrow_drop_down</mat-icon>
         </button>
-        <mat-menu #statusMenu="matMenu" class="LIST">
+        <mat-menu #statusMenu="matMenu">
           @for (opt of statusOptions; track opt.value) {
             <button mat-menu-item (click)="onUpdateStatus(opt.value)">
               {{ opt.label }}
@@ -191,6 +191,56 @@
               <span class="font-bold text-slate-800 dark:text-slate-100">Total Invoice:</span>
               <span class="font-black text-primary">{{ order.totalCost | uah }}</span>
             </div>
+          </div>
+        </mat-card>
+
+        <!-- Dates -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <mat-icon class="text-slate-400 !text-base">calendar_month</mat-icon>
+            Дати
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+
+            <!-- Дата створення -->
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Дата створення</span>
+              @if (order.scheduledDate) {
+                <span class="font-medium text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                  <mat-icon class="!w-4 !h-4 !text-base text-slate-400">event</mat-icon>
+                  {{ order.scheduledDate | date:'dd.MM.yyyy' }}
+                </span>
+              } @else {
+                <span class="text-slate-400 italic text-xs">Не вказано</span>
+              }
+            </div>
+
+            <!-- Поступив у роботу -->
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Поступив у роботу</span>
+              @if (order.startedAt) {
+                <span class="font-medium text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                  <mat-icon class="!w-4 !h-4 !text-base text-emerald-400">play_circle</mat-icon>
+                  {{ order.startedAt | date:'dd.MM.yyyy' }}
+                </span>
+              } @else {
+                <span class="text-slate-400 italic text-xs">Не вказано</span>
+              }
+            </div>
+
+            <!-- Орієнтовна видача -->
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Орієнтовна видача</span>
+              @if (order.estimatedCompletionDate) {
+                <span class="font-medium text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                  <mat-icon class="!w-4 !h-4 !text-base text-amber-400">event_available</mat-icon>
+                  {{ order.estimatedCompletionDate | date:'dd.MM.yyyy' }}
+                </span>
+              } @else {
+                <span class="text-slate-400 italic text-xs">Не вказано</span>
+              }
+            </div>
+
           </div>
         </mat-card>
 

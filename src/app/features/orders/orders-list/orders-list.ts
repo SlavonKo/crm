@@ -9,7 +9,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
-import { OrderStatus, ORDER_STATUS_LABELS } from '../../../data/enums/order-status.enum';
+import { OrderStatus } from '../../../data/enums/order-status.enum';
+import { getOrderBadgeClass, getOrderStatusLabel, ORDER_STATUS_FILTER_OPTIONS } from '../order-status.helpers';
 import { UahPipe } from '../../../shared/pipes/uah.pipe';
 
 @Component({
@@ -34,27 +35,26 @@ export class OrdersList implements OnInit {
   readonly clientsStore = inject(ClientsStore);
   readonly #router       = inject(Router);
 
-  readonly statusOptions = [
-    { value: 'all', label: 'All Statuses' },
-    ...Object.entries(ORDER_STATUS_LABELS).map(([k, v]) => ({
-      value: k as OrderStatus,
-      label: v,
-    })),
-  ];
+  // ─── Status helpers (shared, no duplication) ──────────────────────────────
+  readonly statusOptions  = ORDER_STATUS_FILTER_OPTIONS;
+  readonly getBadgeClass  = getOrderBadgeClass;
+  readonly getStatusLabel = getOrderStatusLabel;
 
   ngOnInit(): void {
     this.store.loadAll();
     this.clientsStore.loadAll();
   }
 
-  getClientName(clientId: string): string {
+  getClientName(clientId: string, manualLabel?: string): string {
+    if (manualLabel) return manualLabel;
     const client = this.clientsStore.clients().find(c => c.id === clientId);
-    return client ? `${client.firstName} ${client.lastName}` : 'Loading...';
+    return client ? `${client.firstName} ${client.lastName}` : clientId || '—';
   }
 
-  getMotorcycleName(motoId: string): string {
+  getMotorcycleName(motoId: string, manualLabel?: string): string {
+    if (manualLabel) return manualLabel;
     const moto = this.clientsStore.motorcycles().find(m => m.id === motoId);
-    return moto ? `${moto.make} ${moto.model} (${moto.year})` : 'Loading...';
+    return moto ? `${moto.make} ${moto.model} (${moto.year})` : motoId || '—';
   }
 
   onFilterChange(status: string): void {
@@ -63,30 +63,5 @@ export class OrdersList implements OnInit {
 
   viewOrderDetails(orderId: string): void {
     this.#router.navigate(['/orders', orderId]);
-  }
-
-  getBadgeClass(status: OrderStatus): string {
-    switch (status) {
-      case OrderStatus.DRAFT:
-        return 'bg-slate-100 text-slate-700';
-      case OrderStatus.PENDING:
-        return 'bg-amber-100 text-amber-700';
-      case OrderStatus.IN_PROGRESS:
-        return 'bg-sky-100 text-sky-700';
-      case OrderStatus.WAITING_PARTS:
-        return 'bg-orange-100 text-orange-700';
-      case OrderStatus.COMPLETED:
-        return 'bg-green-150 text-green-700';
-      case OrderStatus.INVOICED:
-        return 'bg-indigo-100 text-indigo-700';
-      case OrderStatus.CANCELLED:
-        return 'bg-rose-100 text-rose-700';
-      default:
-        return 'bg-slate-100 text-slate-700';
-    }
-  }
-
-  getStatusLabel(status: OrderStatus): string {
-    return ORDER_STATUS_LABELS[status] || status;
   }
 }

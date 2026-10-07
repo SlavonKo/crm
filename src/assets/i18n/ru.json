@@ -135,6 +135,10 @@
     "noMotorcycles": "Мотоциклов не найдено",
     "noMotorcyclesHint": "Добавьте новый мотоцикл для создания нарядов.",
     "clientNotFound": "Клиент не найден",
+    "editDialog": {
+      "title": "Редактировать клиента",
+      "submit": "Сохранить изменения"
+    },
     "dialog": {
       "title": "Новый клиент",
       "firstName": "Имя",

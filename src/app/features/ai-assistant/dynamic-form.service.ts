@@ -32,7 +32,9 @@ export interface WorkOrderForm {
   taxRate:      FormControl<number>;
   laborItems:   FormArray<FormGroup<LaborItemForm>>;
   partsUsed:    FormArray<FormGroup<PartUsedForm>>;
-  scheduledDate: FormControl<Date | null>;
+  scheduledDate:            FormControl<string | null>;
+  startedAt:                FormControl<string | null>;
+  estimatedCompletionDate:  FormControl<string | null>;
 }
 
 /**
@@ -51,13 +53,15 @@ export class DynamicFormService {
 
   buildWorkOrderForm(draft?: Partial<AiWorkOrderDraft>): FormGroup<WorkOrderForm> {
     const form = new FormGroup<WorkOrderForm>({
-      clientId:     new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-      motorcycleId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      clientId:     new FormControl('', { nonNullable: true }),
+      motorcycleId: new FormControl('', { nonNullable: true }),
       title:        new FormControl(draft?.title ?? '', { nonNullable: true, validators: [Validators.required, Validators.maxLength(120)] }),
       description:  new FormControl(draft?.description ?? '', { nonNullable: true }),
       status:       new FormControl<OrderStatus>(OrderStatus.DRAFT, { nonNullable: true }),
       taxRate:      new FormControl(this.#config.defaultTaxRate, { nonNullable: true, validators: [Validators.min(0), Validators.max(1)] }),
-      scheduledDate: new FormControl<Date | null>(null),
+      scheduledDate:           new FormControl<string | null>(null),
+      startedAt:               new FormControl<string | null>(null),
+      estimatedCompletionDate: new FormControl<string | null>(null),
       laborItems:   new FormArray<FormGroup<LaborItemForm>>(
         (draft?.laborItems ?? []).map(l => this.#buildLaborItemGroup(l))
       ),
@@ -144,7 +148,9 @@ export class DynamicFormService {
       description:  v.description,
       status:       v.status,
       taxRate:      v.taxRate,
-      scheduledDate: v.scheduledDate ?? undefined,
+      scheduledDate:           v.scheduledDate            ? new Date(v.scheduledDate)            : undefined,
+      startedAt:               v.startedAt                ? new Date(v.startedAt)                : undefined,
+      estimatedCompletionDate: v.estimatedCompletionDate  ? new Date(v.estimatedCompletionDate)  : undefined,
       laborItems,
       partsUsed,
       subtotalLabor,
@@ -166,7 +172,7 @@ export class DynamicFormService {
 
   #buildPartUsedGroup(defaults?: Partial<AiWorkOrderDraft['partsUsed'][0]>): FormGroup<PartUsedForm> {
     return new FormGroup<PartUsedForm>({
-      inventoryItemId: new FormControl(defaults?.sku ?? '', { nonNullable: true }),
+      inventoryItemId: new FormControl('', { nonNullable: true }),
       sku:             new FormControl(defaults?.sku  ?? '', { nonNullable: true }),
       name:            new FormControl(defaults?.name ?? '', { nonNullable: true, validators: [Validators.required] }),
       quantity:        new FormControl(defaults?.quantity  ?? 1, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),

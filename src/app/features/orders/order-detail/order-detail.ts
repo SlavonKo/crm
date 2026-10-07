@@ -10,7 +10,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { OrderStatus, ORDER_STATUS_LABELS } from '../../../data/enums/order-status.enum';
+import { OrderStatus } from '../../../data/enums/order-status.enum';
+import { getOrderBadgeClass, getOrderStatusLabel, ORDER_STATUS_OPTIONS } from '../order-status.helpers';
 import { UahPipe } from '../../../shared/pipes/uah.pipe';
 
 @Component({
@@ -30,16 +31,14 @@ import { UahPipe } from '../../../shared/pipes/uah.pipe';
   styleUrl: './order-detail.scss',
 })
 export class OrderDetail implements OnInit {
-  readonly store        = inject(OrdersStore);
-  readonly clientsStore = inject(ClientsStore);
+  readonly store         = inject(OrdersStore);
+  readonly clientsStore  = inject(ClientsStore);
   readonly aiService     = inject(AiService);
   readonly #sanitizer    = inject(DomSanitizer);
   readonly #router       = inject(Router);
 
-  // Modern input signal bound to route parameter :id
   readonly id = input.required<string>();
 
-  // Diagnostic advice text signal
   readonly aiAdvice = signal<string | null>(null);
 
   readonly safeReceiptHtml = computed<SafeHtml | null>(() => {
@@ -59,15 +58,14 @@ export class OrderDetail implements OnInit {
     return this.clientsStore.motorcycles().find(m => m.id === o.motorcycleId) ?? null;
   });
 
-  readonly statusOptions = Object.entries(ORDER_STATUS_LABELS).map(([k, v]) => ({
-    value: k as OrderStatus,
-    label: v,
-  }));
+  // ─── Status helpers (shared, no duplication) ──────────────────────────────
+  readonly statusOptions  = ORDER_STATUS_OPTIONS;
+  readonly getBadgeClass  = getOrderBadgeClass;
+  readonly getStatusLabel = getOrderStatusLabel;
 
   constructor() {
     effect(() => {
-      const orderId = this.id();
-      this.store.loadOne(orderId);
+      this.store.loadOne(this.id());
     });
   }
 
@@ -80,12 +78,11 @@ export class OrderDetail implements OnInit {
   }
 
   async generateAiReceipt(): Promise<void> {
-    const order = this.store.activeOrder();
+    const order  = this.store.activeOrder();
     const client = this.client();
     if (!order || !client) return;
-
     try {
-      const html = await this.aiService.generateReceiptHtml(order, client);
+      const html       = await this.aiService.generateReceiptHtml(order, client);
       const promptUsed = `Receipt HTML request for order: ${order.title}`;
       await this.store.attachAiReceipt(order.id, html, promptUsed);
     } catch (err) {
@@ -96,42 +93,18 @@ export class OrderDetail implements OnInit {
   async fetchAiAdvice(): Promise<void> {
     const order = this.store.activeOrder();
     if (!order) return;
-
     try {
       this.aiAdvice.set('Asking AI for advice...');
       const summary = await this.aiService.generateDiagnosticSummary(
         `Problem Description: ${order.description}\n` +
-        `Motorcycle Make: ${this.motorcycle()?.make || 'Unknown'}, Model: ${this.motorcycle()?.model || 'Unknown'}, Mileage: ${this.motorcycle()?.currentMileage || 'Unknown'} km.`
+        `Motorcycle Make: ${this.motorcycle()?.make || 'Unknown'}, ` +
+        `Model: ${this.motorcycle()?.model || 'Unknown'}, ` +
+        `Mileage: ${this.motorcycle()?.currentMileage || 'Unknown'} km.`
       );
       this.aiAdvice.set(summary);
     } catch (err) {
       this.aiAdvice.set('Could not load AI advice at this time.');
       console.error(err);
     }
-  }
-
-  getBadgeClass(status: OrderStatus): string {
-    switch (status) {
-      case OrderStatus.DRAFT:
-        return 'bg-slate-100 text-slate-700';
-      case OrderStatus.PENDING:
-        return 'bg-amber-100 text-amber-700';
-      case OrderStatus.IN_PROGRESS:
-        return 'bg-sky-100 text-sky-700';
-      case OrderStatus.WAITING_PARTS:
-        return 'bg-orange-100 text-orange-700';
-      case OrderStatus.COMPLETED:
-        return 'bg-green-150 text-green-700';
-      case OrderStatus.INVOICED:
-        return 'bg-indigo-100 text-indigo-700';
-      case OrderStatus.CANCELLED:
-        return 'bg-rose-100 text-rose-700';
-      default:
-        return 'bg-slate-100 text-slate-700';
-    }
-  }
-
-  getStatusLabel(status: OrderStatus): string {
-    return ORDER_STATUS_LABELS[status] || status;
   }
 }

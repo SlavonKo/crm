@@ -135,6 +135,10 @@
     "noMotorcycles": "No motorcycles found",
     "noMotorcyclesHint": "Add a new bike to start creating service jobs.",
     "clientNotFound": "Client not found",
+    "editDialog": {
+      "title": "Edit Client",
+      "submit": "Save Changes"
+    },
     "dialog": {
       "title": "Add New Client",
       "firstName": "First Name",

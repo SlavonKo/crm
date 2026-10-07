@@ -1,240 +1,516 @@
 <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+
   <!-- Header -->
   <div class="flex items-center gap-2 text-sm text-slate-500">
     <a routerLink="/orders" class="hover:text-primary transition-colors flex items-center gap-1">
-      <mat-icon class="!w-4 !h-4 !text-base ARROW-BACK">arrow_back</mat-icon>
-      Back to Orders
+      <mat-icon class="!w-4 !h-4 !text-base">arrow_back</mat-icon>
+      {{ 'orders.backToOrders' | transloco }}
     </a>
     <span>/</span>
-    <span class="text-slate-700 dark:text-slate-300 font-medium">New Order</span>
+    <span class="text-slate-700 dark:text-slate-300 font-medium">{{ 'orders.newOrderTitle' | transloco }}</span>
   </div>
 
-  <div class="flex flex-col lg:flex-row gap-8" *ngIf="form">
-    
-    <!-- Left Column: Assignment and AI Assistant -->
-    <div class="flex-1 space-y-6 lg:max-w-md">
-      
-      <!-- Assignment Card -->
-      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
-        <h2 class="text-lg font-bold text-slate-850 dark:text-slate-100 flex items-center gap-2">
-          <mat-icon class="text-primary">assignment_ind</mat-icon>
-          1. Assignment
-        </h2>
+  @if (form) {
+    <div class="flex flex-col lg:flex-row gap-8">
 
-        <div [formGroup]="form" class="flex flex-col gap-3">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Select Client</mat-label>
-            <mat-select formControlName="clientId" (selectionChange)="onClientSelect()" required>
-              @for (c of clientsStore.clients(); track c.id) {
-                <mat-option [value]="c.id">{{ c.firstName }} {{ c.lastName }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+      <!-- ── Left column ─────────────────────────────────────────────────── -->
+      <div class="flex-1 space-y-6 lg:max-w-md">
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Select Motorcycle</mat-label>
-            <mat-select formControlName="motorcycleId" required [disabled]="!form.get('clientId')?.value">
-              @for (m of clientMotorcycles(); track m.id) {
-                <mat-option [value]="m.id">{{ m.make }} {{ m.model }} ({{ m.year }})</mat-option>
-              }
-            </mat-select>
-            @if (!form.get('clientId')?.value) {
-              <mat-hint>Please select a client first</mat-hint>
-            }
-          </mat-form-field>
-        </div>
-      </mat-card>
+        <!-- 1. Assignment -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+          <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <mat-icon class="text-primary">assignment_ind</mat-icon>
+            {{ 'orders.assignment' | transloco }}
+          </h2>
 
-      <!-- AI Prompt Card -->
-      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
-        <h2 class="text-lg font-bold text-slate-850 dark:text-slate-100 flex items-center gap-2">
-          <mat-icon class="text-indigo-500">auto_awesome</mat-icon>
-          2. AI Draft Assitant
-        </h2>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Describe the symptoms or repairs in plain text. The AI will translate it into a formatted title, description, estimated labor items, and parts.
-        </p>
+          <!-- ── CLIENT ─────────────────────────────────────────────────── -->
+          <div class="space-y-3">
 
-        <div class="space-y-4">
-          <mat-form-field appearance="outline" class="w-full !mb-0">
-            <mat-label>Describe repair work...</mat-label>
-            <textarea matInput [value]="aiPromptInput()" (input)="aiPromptInput.set($any($event.target).value)" 
-              placeholder="e.g. oil change + filter swap, replace rear brake pads, estimated 1.5 hours total..." rows="4"></textarea>
-          </mat-form-field>
-
-          <button mat-flat-button color="primary" class="w-full !rounded-xl" 
-            [disabled]="aiService.isLoading() || !aiPromptInput().trim()" (click)="runAiDraft()">
-            @if (aiService.isLoading()) {
-              <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>
-            } @else {
-              <mat-icon class="mr-1">psychology</mat-icon>
-            }
-            Draft with AI Assistant
-          </button>
-        </div>
-      </mat-card>
-
-      <!-- General Info Card -->
-      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
-        <h2 class="text-lg font-bold text-slate-850 dark:text-slate-100 flex items-center gap-2">
-          <mat-icon class="text-slate-600">info_outline</mat-icon>
-          3. General Info
-        </h2>
-
-        <div [formGroup]="form" class="space-y-3">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Order Title</mat-label>
-            <input matInput formControlName="title" placeholder="e.g. Annual Maintenance" required>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Detailed Description</mat-label>
-            <textarea matInput formControlName="description" placeholder="Diagnostic details or service guidelines..." rows="3"></textarea>
-          </mat-form-field>
-        </div>
-      </mat-card>
-
-    </div>
-
-    <!-- Right Column: Line Items and Totals -->
-    <div class="flex-1 space-y-6">
-      
-      <!-- Labor & Parts Lines Card -->
-      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-6">
-        <div [formGroup]="form" class="space-y-6">
-          
-          <!-- Labor Lines -->
-          <div class="space-y-4">
+            <!-- Client mode toggle -->
             <div class="flex items-center justify-between">
-              <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <mat-icon class="text-slate-450">handyman</mat-icon>
-                Labor Items
-              </h3>
-              <button mat-stroked-button color="primary" type="button" class="!rounded-lg" (click)="addLaborItem()">
-                <mat-icon class="mr-0.5">add</mat-icon> Add Labor
-              </button>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Клієнт</span>
+              <div class="flex rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden text-xs">
+                <button type="button"
+                  class="px-3 py-1.5 transition-colors"
+                  [class.bg-primary]="clientMode() === 'select'"
+                  [class.text-white]="clientMode() === 'select'"
+                  [class.text-slate-500]="clientMode() !== 'select'"
+                  (click)="setClientMode('select')">
+                  З бази
+                </button>
+                <button type="button"
+                  class="px-3 py-1.5 transition-colors border-l border-slate-200 dark:border-slate-700"
+                  [class.bg-primary]="clientMode() === 'manual'"
+                  [class.text-white]="clientMode() === 'manual'"
+                  [class.text-slate-500]="clientMode() !== 'manual'"
+                  (click)="setClientMode('manual')">
+                  Вручну
+                </button>
+              </div>
             </div>
 
-            <div formArrayName="laborItems" class="space-y-4">
-              @if (laborItems.length === 0) {
-                <p class="text-xs text-slate-400 italic">No labor items added yet.</p>
-              }
-              
-              @for (item of laborItems.controls; track $index) {
-                <div [formGroupName]="$index" class="flex flex-col sm:flex-row items-start gap-3 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40">
-                  <mat-form-field appearance="outline" class="flex-1 w-full" subscriptSizing="dynamic">
-                    <mat-label>Labor Description</mat-label>
-                    <input matInput formControlName="description" required>
+            <!-- Select client from DB -->
+            @if (clientMode() === 'select') {
+              <div [formGroup]="form">
+                <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic"
+                  [class.mat-form-field-invalid]="showErrors() && !form.get('clientId')?.value">
+                  <mat-label>{{ 'orders.selectClient' | transloco }}</mat-label>
+                  <mat-select formControlName="clientId" (selectionChange)="onClientSelect($event.value)">
+                    @for (c of clientsStore.clients(); track c.id) {
+                      <mat-option [value]="c.id">{{ c.firstName }} {{ c.lastName }}</mat-option>
+                    }
+                  </mat-select>
+                  @if (showErrors() && !form.get('clientId')?.value) {
+                    <mat-error>Оберіть клієнта</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            }
+
+            <!-- Manual client input -->
+            @if (clientMode() === 'manual') {
+              <div [formGroup]="manualClientForm"
+                class="flex flex-col gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/40">
+                <p class="text-xs text-slate-400">Заповніть хоча б ім'я або прізвище.</p>
+
+                <!-- Error if neither name field filled -->
+                @if (showErrors() && manualClientForm.hasError('atLeastOneName')) {
+                  <div class="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <mat-icon class="!w-3.5 !h-3.5 !text-sm">error_outline</mat-icon>
+                    Вкажіть хоча б ім'я або прізвище
+                  </div>
+                }
+
+                <div class="flex gap-3">
+                  <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+                    <mat-label>Ім'я</mat-label>
+                    <input matInput formControlName="firstName" placeholder="Іван">
                   </mat-form-field>
+                  <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+                    <mat-label>Прізвище</mat-label>
+                    <input matInput formControlName="lastName" placeholder="Іваненко">
+                  </mat-form-field>
+                </div>
 
-                  <div class="flex gap-3 w-full sm:w-auto">
-                    <mat-form-field appearance="outline" class="w-24" subscriptSizing="dynamic">
-                      <mat-label>Hours</mat-label>
-                      <input matInput type="number" formControlName="hours" required>
-                    </mat-form-field>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Телефон</mat-label>
+                  <input matInput formControlName="phone" placeholder="+380 50 123 4567" inputmode="tel">
+                  <mat-icon matSuffix class="text-slate-400">phone</mat-icon>
+                </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="w-28" subscriptSizing="dynamic">
-                      <mat-label>Rate</mat-label>
-                      <input matInput type="number" formControlName="ratePerHour" required>
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" placeholder="ivan@example.com" type="email">
+                  <mat-error *ngIf="manualClientForm.get('email')?.hasError('email')">
+                    Невірний формат email
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            }
+          </div>
+
+          <!-- ── MOTORCYCLE ─────────────────────────────────────────────── -->
+          @if (clientMode() === 'select' && !selectedClientId()) {
+            <p class="text-xs text-slate-400 italic">{{ 'orders.selectClientFirst' | transloco }}</p>
+          } @else {
+            <div class="space-y-3">
+
+              <!-- Moto mode toggle -->
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Мотоцикл</span>
+                <div class="flex rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden text-xs">
+                  <button type="button"
+                    class="px-3 py-1.5 transition-colors"
+                    [class.bg-primary]="motoMode() === 'select'"
+                    [class.text-white]="motoMode() === 'select'"
+                    [class.text-slate-500]="motoMode() !== 'select'"
+                    (click)="setMotoMode('select')">
+                    З бази
+                  </button>
+                  <button type="button"
+                    class="px-3 py-1.5 transition-colors border-l border-slate-200 dark:border-slate-700"
+                    [class.bg-primary]="motoMode() === 'manual'"
+                    [class.text-white]="motoMode() === 'manual'"
+                    [class.text-slate-500]="motoMode() !== 'manual'"
+                    (click)="setMotoMode('manual')">
+                    Вручну
+                  </button>
+                </div>
+              </div>
+
+              <!-- Select from DB (only in client select mode) -->
+              @if (motoMode() === 'select' && clientMode() === 'select') {
+                @if (clientMotorcycles().length > 0) {
+                  <div [formGroup]="form">
+                    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic"
+                      [class.mat-form-field-invalid]="showErrors() && !form.get('motorcycleId')?.value">
+                      <mat-label>{{ 'orders.selectMotorcycle' | transloco }}</mat-label>
+                      <mat-select formControlName="motorcycleId">
+                        @for (m of clientMotorcycles(); track m.id) {
+                          <mat-option [value]="m.id">
+                            {{ m.make }} {{ m.model }} ({{ m.year }})
+                            @if (m.licensePlate) {&nbsp;· {{ m.licensePlate }}}
+                          </mat-option>
+                        }
+                      </mat-select>
+                      @if (showErrors() && !form.get('motorcycleId')?.value) {
+                        <mat-error>Оберіть мотоцикл</mat-error>
+                      }
                     </mat-form-field>
-                    
-                    <button mat-icon-button color="warn" class="mt-1" (click)="removeLaborItem($index)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
                   </div>
+                } @else {
+                  <div class="flex items-center gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-xs">
+                    <mat-icon class="!w-4 !h-4 !text-base shrink-0">info</mat-icon>
+                    <span>У клієнта немає мотоциклів. Перейдіть у режим «Вручну» або
+                      <a [routerLink]="['/clients', selectedClientId()]" class="underline font-semibold">
+                        додайте в картці клієнта
+                      </a>.
+                    </span>
+                  </div>
+                }
+              }
+
+              <!-- Manual moto input -->
+              @if (motoMode() === 'manual' || clientMode() === 'manual') {
+                <div [formGroup]="manualMotoForm"
+                  class="flex flex-col gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/40">
+                  <p class="text-xs text-slate-400">Введіть дані мотоцикла вручну.</p>
+
+                  <!-- Make + Model -->
+                  <div class="flex gap-3">
+                    <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+                      <mat-label>Марка *</mat-label>
+                      <input matInput formControlName="make" placeholder="Honda">
+                      @if (showErrors() && manualMotoForm.get('make')?.hasError('required')) {
+                        <mat-error>Обов'язково</mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+                      <mat-label>Модель *</mat-label>
+                      <input matInput formControlName="model" placeholder="CB650R">
+                      @if (showErrors() && manualMotoForm.get('model')?.hasError('required')) {
+                        <mat-error>Обов'язково</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Year + License plate -->
+                  <div class="flex gap-3">
+                    <mat-form-field appearance="outline" class="w-28" subscriptSizing="dynamic">
+                      <mat-label>Рік *</mat-label>
+                      <input matInput type="number" formControlName="year">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+                      <mat-label>Держ. номер</mat-label>
+                      <input matInput formControlName="licensePlate" placeholder="АА1234ВВ"
+                        class="uppercase">
+                      @if (manualMotoForm.get('licensePlate')?.hasError('plateFormat')) {
+                        <mat-error>Невірний формат (АА1234ВВ або іменний)</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+
+                  <!-- VIN -->
+                  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>VIN (17 символів)</mat-label>
+                    <input matInput formControlName="vin" placeholder="JS1GN7CA1G2100001"
+                      maxlength="17" class="uppercase tracking-widest font-mono">
+                    <mat-hint align="end">{{ manualMotoForm.get('vin')?.value?.length ?? 0 }}/17</mat-hint>
+                    @if (manualMotoForm.get('vin')?.hasError('minlength') || manualMotoForm.get('vin')?.hasError('maxlength')) {
+                      <mat-error>VIN — рівно 17 символів</mat-error>
+                    }
+                  </mat-form-field>
                 </div>
               }
-            </div>
-          </div>
 
-          <!-- Parts Lines -->
-          <div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-6">
-            <div class="flex items-center justify-between">
-              <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <mat-icon class="text-slate-450">inventory_2</mat-icon>
-                Parts Used
-              </h3>
-              <button mat-stroked-button color="primary" type="button" class="!rounded-lg" (click)="addPartUsed()">
-                <mat-icon class="mr-0.5">add</mat-icon> Add Part
-              </button>
             </div>
+          }
+        </mat-card>
 
-            <div formArrayName="partsUsed" class="space-y-4">
-              @if (partsUsed.length === 0) {
-                <p class="text-xs text-slate-400 italic">No parts added yet.</p>
+        <!-- 2. AI Draft Assistant -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+          <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <mat-icon class="text-indigo-500">auto_awesome</mat-icon>
+            {{ 'orders.aiDraftAssistant' | transloco }}
+          </h2>
+          <p class="text-xs text-slate-400 leading-relaxed">{{ 'orders.aiDraftHint' | transloco }}</p>
+
+          <div class="space-y-3">
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>{{ 'orders.aiPromptPlaceholder' | transloco }}</mat-label>
+              <textarea matInput [value]="aiPromptInput()"
+                (input)="aiPromptInput.set($any($event.target).value)" rows="4"></textarea>
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" class="w-full !rounded-xl"
+              [disabled]="aiService.isLoading() || !aiPromptInput().trim()"
+              (click)="runAiDraft()">
+              @if (aiService.isLoading()) {
+                <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>
+              } @else {
+                <mat-icon class="mr-1">psychology</mat-icon>
               }
+              {{ 'orders.draftWithAi' | transloco }}
+            </button>
+          </div>
+        </mat-card>
 
-              @for (item of partsUsed.controls; track $index) {
-                <div [formGroupName]="$index" class="flex flex-col sm:flex-row items-start gap-3 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40">
-                  <div class="flex-1 w-full space-y-2">
-                    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-                      <mat-label>Part Name</mat-label>
-                      <input matInput formControlName="name" required>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="w-full text-xs font-mono" subscriptSizing="dynamic">
-                      <mat-label>SKU (Optional)</mat-label>
-                      <input matInput formControlName="sku">
-                    </mat-form-field>
-                  </div>
+        <!-- 3. General Info -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+          <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <mat-icon class="text-slate-500">info_outline</mat-icon>
+            {{ 'orders.generalInfo' | transloco }}
+          </h2>
 
-                  <div class="flex gap-3 w-full sm:w-auto">
-                    <mat-form-field appearance="outline" class="w-20" subscriptSizing="dynamic">
-                      <mat-label>Qty</mat-label>
-                      <input matInput type="number" formControlName="quantity" required>
-                    </mat-form-field>
+          <div [formGroup]="form" class="space-y-3">
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>{{ 'orders.orderTitle' | transloco }} *</mat-label>
+              <input matInput formControlName="title"
+                [placeholder]="'orders.orderTitlePlaceholder' | transloco">
+              @if ((showErrors() || form.get('title')?.touched) && form.get('title')?.hasError('required')) {
+                <mat-error>{{ 'common.required' | transloco }}</mat-error>
+              }
+            </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="w-28" subscriptSizing="dynamic">
-                      <mat-label>Price</mat-label>
-                      <input matInput type="number" formControlName="unitPrice" required>
-                    </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>{{ 'orders.orderDescription' | transloco }}</mat-label>
+              <textarea matInput formControlName="description"
+                [placeholder]="'orders.orderDescriptionPlaceholder' | transloco" rows="3"></textarea>
+            </mat-form-field>
+          </div>
+        </mat-card>
 
-                    <button mat-icon-button color="warn" class="mt-1" (click)="removePartUsed($index)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
+      </div>
+
+      <!-- ── Right column ────────────────────────────────────────────────── -->
+      <div class="flex-1 space-y-6">
+
+        <!-- Labor & Parts -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-6">
+          <div [formGroup]="form" class="space-y-6">
+
+            <!-- Labor items -->
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <mat-icon class="text-slate-400">handyman</mat-icon>
+                  {{ 'orders.laborItems' | transloco }}
+                </h3>
+                <button mat-stroked-button color="primary" type="button" class="!rounded-lg" (click)="addLaborItem()">
+                  <mat-icon>add</mat-icon> {{ 'orders.addLabor' | transloco }}
+                </button>
+              </div>
+
+              <!-- Norm hours source: file upload + status -->
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 text-xs">
+                <mat-icon class="text-indigo-400 shrink-0">menu_book</mat-icon>
+                <div class="flex-1 min-w-0">
+                  <span class="font-semibold text-indigo-700 dark:text-indigo-300">Норма-години</span>
+                  @if (normHoursFileName()) {
+                    <span class="ml-1.5 text-indigo-500 dark:text-indigo-400 truncate">· {{ normHoursFileName() }}</span>
+                  }
+                  <span class="ml-1 text-indigo-400">({{ normHours.entries().length }} операцій)</span>
+                  @if (normHours.parseError()) {
+                    <p class="text-red-500 mt-0.5">{{ normHours.parseError() }}</p>
+                  }
                 </div>
-              }
+                <label class="cursor-pointer inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors shrink-0">
+                  <mat-icon class="!w-3.5 !h-3.5 !text-sm">upload_file</mat-icon>
+                  Завантажити PDF
+                  <input type="file" accept=".pdf,.csv,.txt" class="hidden"
+                    (change)="onNormHoursFileChange($event)">
+                </label>
+              </div>
+
+              <div formArrayName="laborItems" class="space-y-3">
+                @if (laborItems.length === 0) {
+                  <p class="text-xs text-slate-400 italic">{{ 'orders.noLaborItems' | transloco }}</p>
+                }
+                @for (item of laborItems.controls; track $index) {
+                  <div [formGroupName]="$index"
+                    class="flex flex-col sm:flex-row items-start gap-3 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40">
+
+                    <!-- Description with autocomplete -->
+                    <mat-form-field appearance="outline" class="flex-1 w-full" subscriptSizing="dynamic">
+                      <mat-label>{{ 'orders.laborDescription' | transloco }}</mat-label>
+                      <input matInput formControlName="description"
+                        [matAutocomplete]="normAuto"
+                        (input)="$any(item).get('description').setValue($any($event.target).value)"
+                        required>
+                      <mat-autocomplete #normAuto="matAutocomplete"
+                        (optionSelected)="applyNormHour($event.option.value, $index)">
+                        @for (entry of normHoursPerRow().get($index); track entry.id) {
+                          <mat-option [value]="entry">
+                            <div class="flex items-center justify-between gap-4 w-full">
+                              <span>{{ entry.operation }}</span>
+                              <span class="text-xs text-slate-400 shrink-0 font-mono">
+                                @if (entry.make !== '*') {
+                                  {{ entry.make }} {{ entry.model }} ·
+                                }
+                                {{ entry.hours }}&nbsp;год
+                              </span>
+                            </div>
+                          </mat-option>
+                        }
+                      </mat-autocomplete>
+                      <mat-icon matSuffix class="text-slate-300 !text-base">expand_more</mat-icon>
+                    </mat-form-field>
+
+                    <div class="flex gap-2 w-full sm:w-auto items-start">
+                      <mat-form-field appearance="outline" class="w-24" subscriptSizing="dynamic">
+                        <mat-label>{{ 'orders.hours' | transloco }}</mat-label>
+                        <input matInput type="number" formControlName="hours" step="0.5" min="0.5" required>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="w-28" subscriptSizing="dynamic">
+                        <mat-label>{{ 'orders.rate' | transloco }}</mat-label>
+                        <input matInput type="number" formControlName="ratePerHour" required>
+                      </mat-form-field>
+                      <button mat-icon-button color="warn" class="mt-1" type="button" (click)="removeLaborItem($index)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Parts used -->
+            <div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-6">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <mat-icon class="text-slate-400">inventory_2</mat-icon>
+                  {{ 'orders.partsUsed' | transloco }}
+                </h3>
+                <button mat-stroked-button color="primary" type="button" class="!rounded-lg" (click)="addPartUsed()">
+                  <mat-icon>add</mat-icon> {{ 'orders.addPart' | transloco }}
+                </button>
+              </div>
+
+              <div formArrayName="partsUsed" class="space-y-3">
+                @if (partsUsed.length === 0) {
+                  <p class="text-xs text-slate-400 italic">{{ 'orders.noPartsUsed' | transloco }}</p>
+                }
+                @for (item of partsUsed.controls; track $index) {
+                  <div [formGroupName]="$index"
+                    class="flex flex-col sm:flex-row items-start gap-3 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40">
+                    <div class="flex-1 w-full space-y-2">
+                      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                        <mat-label>{{ 'orders.partName' | transloco }}</mat-label>
+                        <input matInput formControlName="name" required>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                        <mat-label>SKU</mat-label>
+                        <input matInput formControlName="sku" class="font-mono text-xs">
+                      </mat-form-field>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto items-start">
+                      <mat-form-field appearance="outline" class="w-20" subscriptSizing="dynamic">
+                        <mat-label>{{ 'orders.qty' | transloco }}</mat-label>
+                        <input matInput type="number" formControlName="quantity" required>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="w-28" subscriptSizing="dynamic">
+                        <mat-label>{{ 'orders.unitPrice' | transloco }}</mat-label>
+                        <input matInput type="number" formControlName="unitPrice" required>
+                      </mat-form-field>
+                      <button mat-icon-button color="warn" class="mt-1" type="button" (click)="removePartUsed($index)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
+          </div>
+        </mat-card>
+
+        <!-- Dates -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+          <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+            <mat-icon class="text-slate-400">calendar_month</mat-icon>
+            Дати
+          </h3>
+
+          <div [formGroup]="form" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+            <!-- Дата створення ордера -->
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Дата створення</mat-label>
+              <input matInput type="date" formControlName="scheduledDate">
+              <mat-icon matSuffix class="text-slate-400 !text-base">event</mat-icon>
+            </mat-form-field>
+
+            <!-- Дата поступлення в роботу -->
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Поступив у роботу</mat-label>
+              <input matInput type="date" formControlName="startedAt">
+              <mat-icon matSuffix class="text-slate-400 !text-base">play_circle</mat-icon>
+            </mat-form-field>
+
+            <!-- Орієнтовна дата видачі -->
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Орієнтовна видача</mat-label>
+              <input matInput type="date" formControlName="estimatedCompletionDate">
+              <mat-icon matSuffix class="text-slate-400 !text-base">event_available</mat-icon>
+            </mat-form-field>
+
+          </div>
+        </mat-card>
+
+        <!-- Totals & Actions -->
+        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+            {{ 'orders.pricingSummary' | transloco }}
+          </h3>
+
+          <div class="space-y-2 text-sm border-b border-slate-100 dark:border-slate-800/80 pb-4">
+            <div class="flex justify-between">
+              <span class="text-slate-400">{{ 'orders.laborSubtotal' | transloco }}:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">{{ liveSubtotalLabor() | uah }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">{{ 'orders.partsSubtotal' | transloco }}:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">{{ liveSubtotalParts() | uah }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">{{ 'orders.estimatedVat' | transloco }}:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300">20%</span>
             </div>
           </div>
 
-        </div>
-      </mat-card>
-
-      <!-- Totals & Actions Card -->
-      <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
-        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Pricing Summary</h3>
-        
-        <div class="space-y-2 text-sm border-b border-slate-100 dark:border-slate-800/80 pb-4">
-          <div class="flex justify-between">
-            <span class="text-slate-400">Labor Subtotal:</span>
-            <span class="font-medium text-slate-700 dark:text-slate-350">{{ liveSubtotalLabor() | uah }}</span>
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-base font-bold text-slate-800 dark:text-slate-100">
+              {{ 'orders.estimatedTotal' | transloco }}:
+            </span>
+            <span class="text-3xl font-black text-primary">{{ liveTotal() | uah }}</span>
           </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">Parts Subtotal:</span>
-            <span class="font-medium text-slate-700 dark:text-slate-350">{{ liveSubtotalParts() | uah }}</span>
+
+          <!-- Validation hint when errors shown -->
+          @if (showErrors() && !canSave()) {
+            <div class="flex items-start gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-xs">
+              <mat-icon class="!w-4 !h-4 !text-base shrink-0 mt-0.5">error_outline</mat-icon>
+              <span>Заповніть усі обов'язкові поля: назву замовлення, дані клієнта та мотоцикла.</span>
+            </div>
+          }
+
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+            <button mat-button type="button" routerLink="/orders">
+              {{ 'common.cancel' | transloco }}
+            </button>
+            <button mat-flat-button color="primary" type="button" class="!rounded-xl"
+              [disabled]="store.isLoading()"
+              (click)="trySubmit()">
+              @if (store.isLoading()) {
+                <mat-spinner diameter="18" class="inline-block mr-2"></mat-spinner>
+              } @else {
+                <mat-icon class="mr-1">check</mat-icon>
+              }
+              {{ 'orders.createWorkOrder' | transloco }}
+            </button>
           </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">Estimated VAT:</span>
-            <span class="font-medium text-slate-700 dark:text-slate-350">20%</span>
-          </div>
-        </div>
+        </mat-card>
 
-        <div class="flex items-center justify-between pt-2">
-          <span class="text-base font-bold text-slate-800 dark:text-slate-100">Estimated Total:</span>
-          <span class="text-3xl font-black text-primary">{{ liveTotal() | uah }}</span>
-        </div>
-
-        <!-- Submit actions -->
-        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
-          <button mat-button type="button" routerLink="/orders">Cancel</button>
-          <button mat-flat-button color="primary" type="button" class="!rounded-xl"
-            [disabled]="form.invalid || store.isLoading()" (click)="onSave()">
-            Create Work Order
-          </button>
-        </div>
-      </mat-card>
-
+      </div>
     </div>
-
-  </div>
+  }
 </div>

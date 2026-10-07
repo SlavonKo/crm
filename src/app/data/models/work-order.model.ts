@@ -41,7 +41,21 @@ export interface WorkOrder {
   /** The original prompt passed to the AI — kept for audit */
   aiPromptUsed?: string;
   assignedTechnicianId?: string;
+  /**
+   * Display label when the client was entered manually (not linked to a Client record).
+   * When set, clientId contains an empty string or a placeholder.
+   */
+  manualClientLabel?: string;
+  /**
+   * Display label when the motorcycle was entered manually (not linked to a Motorcycle record).
+   * When set, motorcycleId contains an empty string or a placeholder.
+   */
+  manualMotoLabel?: string;
   scheduledDate?: Date;
+  /** Дата поступлення замовлення в роботу */
+  startedAt?: Date;
+  /** Орієнтовна дата видачі замовлення клієнту */
+  estimatedCompletionDate?: Date;
   completedAt?: Date;
   createdAt: Date;
   updatedAt: Date;

@@ -120,6 +120,8 @@ export const WorkOrderSchema = z.object({
   aiPromptUsed:           z.string().optional(),
   assignedTechnicianId:   z.string().optional(),
   scheduledDate:          z.coerce.date().optional(),
+  startedAt:              z.coerce.date().optional(),
+  estimatedCompletionDate: z.coerce.date().optional(),
   completedAt:            z.coerce.date().optional(),
   createdAt:              z.coerce.date(),
   updatedAt:              z.coerce.date(),

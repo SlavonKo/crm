@@ -65,6 +65,25 @@ export class ClientDetail implements OnInit {
     return activeOrder ? 'In Workshop' : 'Active';
   }
 
+  // ─── Edit client ─────────────────────────────────────────────────────────
+
+  onEditClient(): void {
+    const client = this.store.selectedClient();
+    if (!client) return;
+
+    const ref = this.#dialog.open(EditClientDialogComponent, {
+      width: '520px',
+      autoFocus: 'first-tab',
+      data: client,
+    });
+
+    ref.afterClosed().subscribe(async (patch: Partial<import('../../../data/models/client.model').Client> | undefined) => {
+      if (patch) {
+        await this.store.update(client.id, patch);
+      }
+    });
+  }
+
   // ─── Add motorcycle ───────────────────────────────────────────────────────
 
   openAddMotoDialog(): void {
@@ -323,6 +342,107 @@ export class EditMotorcycleDialogComponent {
     type:           [this.data.type,           Validators.required],
     licensePlate:   [this.data.licensePlate ?? ''],
     color:          [this.data.color ?? ''],
+  });
+
+  onSubmit(): void {
+    if (this.form.valid) this.dialogRef.close(this.form.value);
+  }
+}
+
+// ─── Edit Client Dialog ───────────────────────────────────────────────────────
+
+import { Client } from '../../../data/models/client.model';
+
+@Component({
+  selector: 'app-edit-client-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    TranslocoModule,
+  ],
+  template: `
+    <h2 mat-dialog-title class="!text-xl !font-bold">
+      {{ 'clients.editDialog.title' | transloco }}
+    </h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-dialog-content class="!max-h-[70vh]">
+        <div class="flex flex-col gap-3 py-2">
+
+          <div class="flex gap-3">
+            <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+              <mat-label>{{ 'clients.dialog.firstName' | transloco }}</mat-label>
+              <input matInput formControlName="firstName" required>
+              <mat-error *ngIf="form.get('firstName')?.hasError('required')">
+                {{ 'common.required' | transloco }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+              <mat-label>{{ 'clients.dialog.lastName' | transloco }}</mat-label>
+              <input matInput formControlName="lastName" required>
+              <mat-error *ngIf="form.get('lastName')?.hasError('required')">
+                {{ 'common.required' | transloco }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'clients.dialog.phone' | transloco }}</mat-label>
+            <input matInput formControlName="phone" required>
+            <mat-error *ngIf="form.get('phone')?.hasError('required')">
+              {{ 'common.required' | transloco }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'clients.dialog.email' | transloco }}</mat-label>
+            <input matInput type="email" formControlName="email">
+            <mat-error *ngIf="form.get('email')?.hasError('email')">
+              {{ 'common.invalidEmail' | transloco }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'clients.dialog.address' | transloco }}</mat-label>
+            <input matInput formControlName="address">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>{{ 'clients.dialog.notes' | transloco }}</mat-label>
+            <textarea matInput formControlName="notes" rows="3"></textarea>
+          </mat-form-field>
+
+        </div>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end" class="!px-6 !pb-4 gap-2">
+        <button mat-button type="button" (click)="dialogRef.close()">
+          {{ 'common.cancel' | transloco }}
+        </button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+          {{ 'clients.editDialog.submit' | transloco }}
+        </button>
+      </mat-dialog-actions>
+    </form>
+  `,
+})
+export class EditClientDialogComponent {
+  readonly dialogRef = inject(MatDialogRef<EditClientDialogComponent>);
+  readonly data      = inject<Client>(MAT_DIALOG_DATA);
+  readonly #fb       = inject(FormBuilder);
+
+  readonly form: FormGroup = this.#fb.group({
+    firstName: [this.data.firstName, Validators.required],
+    lastName:  [this.data.lastName,  Validators.required],
+    phone:     [this.data.phone,     Validators.required],
+    email:     [this.data.email  ?? '', Validators.email],
+    address:   [this.data.address ?? ''],
+    notes:     [this.data.notes   ?? ''],
   });
 
   onSubmit(): void {
