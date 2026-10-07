@@ -1,27 +1,66 @@
 @if (auth.isAuthenticated()) {
+
+  <!-- ═══════════════════════════════════════════════════════
+       TOP TOOLBAR — visible on all screen sizes
+  ════════════════════════════════════════════════════════ -->
   <mat-toolbar class="toolbar">
 
-    <!-- Logo + nav links -->
-    <div class="flex items-center gap-1">
-      <mat-icon class="text-indigo-500 mr-1">two_wheeler</mat-icon>
-      <span class="font-bold text-sm mr-4 hidden sm:inline">{{ 'navigation.appTitle' | transloco }}</span>
+    <!-- Left: hamburger (mobile only) + logo + desktop nav links -->
+    <div class="flex items-center gap-1 min-w-0">
 
-      <a mat-button routerLink="/orders"    routerLinkActive="bg-white/10" class="!rounded-lg">Замовлення</a>
-      <a mat-button routerLink="/clients"   routerLinkActive="bg-white/10" class="!rounded-lg">Клієнти</a>
-      <a mat-button routerLink="/inventory" routerLinkActive="bg-white/10" class="!rounded-lg">Склад</a>
-      <a mat-button routerLink="/calendar"  routerLinkActive="bg-white/10" class="!rounded-lg">Календар</a>
+      <!-- Hamburger — shown only on mobile (<md) -->
+      <button
+        mat-icon-button
+        class="toolbar__hamburger"
+        aria-label="Відкрити меню навігації"
+        (click)="toggleDrawer()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <!-- Logo icon + app title -->
+      <a routerLink="/orders" class="flex items-center gap-1.5 no-underline" aria-label="На головну">
+        <mat-icon class="text-indigo-500 shrink-0">two_wheeler</mat-icon>
+        <span class="font-bold text-sm toolbar__app-title truncate">
+          {{ 'navigation.appTitle' | transloco }}
+        </span>
+      </a>
+
+      <!-- Desktop nav links — hidden on mobile, shown on md+ -->
+      <nav class="toolbar__desktop-nav flex items-center gap-0.5 ml-3" aria-label="Основна навігація">
+        <a mat-button routerLink="/orders"    routerLinkActive="active-toolbar-link" class="!rounded-lg">Замовлення</a>
+        <a mat-button routerLink="/clients"   routerLinkActive="active-toolbar-link" class="!rounded-lg">Клієнти</a>
+        <a mat-button routerLink="/inventory" routerLinkActive="active-toolbar-link" class="!rounded-lg">Склад</a>
+        <a mat-button routerLink="/calendar"  routerLinkActive="active-toolbar-link" class="!rounded-lg">Календар</a>
+      </nav>
     </div>
 
     <span class="flex-1"></span>
 
-    <!-- Right side -->
-    <div class="flex items-center gap-1">
+    <!-- Right side controls -->
+    <div class="flex items-center gap-1 shrink-0">
+
+      <!-- Alarm: найближчі дати замовлень -->
+      <button
+        mat-icon-button
+        (click)="openUpcomingDates()"
+        matTooltip="Найближчі дати замовлень"
+        aria-label="Найближчі дати замовлень"
+        class="text-slate-500 hover:text-amber-500"
+        [matBadge]="upcomingCount > 0 ? upcomingCount : null"
+        matBadgeColor="warn"
+        matBadgeSize="small"
+        matBadgeOverlap="true"
+      >
+        <mat-icon>alarm</mat-icon>
+      </button>
+
       <app-theme-switch></app-theme-switch>
       <app-lang-switch></app-lang-switch>
 
-      <!-- User chip + logout -->
-      <div class="flex items-center gap-2 ml-2 pl-2 border-l border-slate-200 dark:border-slate-700">
-        <span class="text-sm text-slate-500 dark:text-slate-400 hidden md:inline">
+      <!-- User phone + logout -->
+      <div class="flex items-center gap-1 ml-1 pl-2 border-l border-slate-200 dark:border-slate-700">
+        <span class="text-sm text-slate-500 dark:text-slate-400 toolbar__user-phone truncate max-w-[140px]">
           {{ auth.currentUser()?.phoneNumber }}
         </span>
         <button
@@ -37,4 +76,131 @@
     </div>
 
   </mat-toolbar>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MOBILE DRAWER OVERLAY
+  ════════════════════════════════════════════════════════ -->
+  @if (drawerOpen()) {
+    <div
+      class="mobile-drawer-overlay"
+      role="presentation"
+      (click)="closeDrawer()"
+      (keydown.escape)="closeDrawer()"
+    ></div>
+
+    <!-- Drawer panel -->
+    <nav class="mobile-nav-drawer" role="navigation" aria-label="Мобільна навігація">
+
+      <!-- Drawer header -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-indigo-500">two_wheeler</mat-icon>
+          <span class="font-bold text-base text-slate-800 dark:text-slate-100">
+            {{ 'navigation.appTitle' | transloco }}
+          </span>
+        </div>
+        <button mat-icon-button (click)="closeDrawer()" aria-label="Закрити меню">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Drawer nav links -->
+      <div class="flex flex-col gap-1 p-3">
+        <a
+          routerLink="/orders"
+          routerLinkActive="drawer-link--active"
+          class="drawer-link"
+          (click)="closeDrawer()"
+        >
+          <mat-icon>assignment</mat-icon>
+          <span>Замовлення</span>
+        </a>
+        <a
+          routerLink="/clients"
+          routerLinkActive="drawer-link--active"
+          class="drawer-link"
+          (click)="closeDrawer()"
+        >
+          <mat-icon>people</mat-icon>
+          <span>Клієнти</span>
+        </a>
+        <a
+          routerLink="/inventory"
+          routerLinkActive="drawer-link--active"
+          class="drawer-link"
+          (click)="closeDrawer()"
+        >
+          <mat-icon>inventory_2</mat-icon>
+          <span>Склад</span>
+        </a>
+        <a
+          routerLink="/calendar"
+          routerLinkActive="drawer-link--active"
+          class="drawer-link"
+          (click)="closeDrawer()"
+        >
+          <mat-icon>calendar_month</mat-icon>
+          <span>Календар</span>
+        </a>
+      </div>
+
+      <!-- Drawer footer: user info + actions -->
+      <div class="mt-auto border-t border-slate-200 dark:border-slate-800 p-4 space-y-3">
+
+        @if (upcomingCount > 0) {
+          <button
+            class="drawer-link w-full"
+            (click)="openUpcomingDates(); closeDrawer()"
+          >
+            <mat-icon class="text-amber-500">alarm</mat-icon>
+            <span>Найближчі дати</span>
+            <span class="ml-auto bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+              {{ upcomingCount }}
+            </span>
+          </button>
+        }
+
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm text-slate-500 dark:text-slate-400 truncate flex-1">
+            {{ auth.currentUser()?.phoneNumber }}
+          </span>
+          <div class="flex items-center gap-1 shrink-0">
+            <app-theme-switch></app-theme-switch>
+            <app-lang-switch></app-lang-switch>
+            <button
+              mat-icon-button
+              (click)="signOut()"
+              aria-label="Вийти"
+              class="text-slate-500 hover:text-red-500"
+            >
+              <mat-icon>logout</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  }
+
+  <!-- ═══════════════════════════════════════════════════════
+       BOTTOM NAV — mobile only (<md), fixed to bottom
+  ════════════════════════════════════════════════════════ -->
+  <nav class="bottom-nav" aria-label="Нижня навігація">
+    <a routerLink="/orders"    routerLinkActive="active-nav-link" aria-label="Замовлення">
+      <mat-icon>assignment</mat-icon>
+      <span>Замовлення</span>
+    </a>
+    <a routerLink="/clients"   routerLinkActive="active-nav-link" aria-label="Клієнти">
+      <mat-icon>people</mat-icon>
+      <span>Клієнти</span>
+    </a>
+    <a routerLink="/inventory" routerLinkActive="active-nav-link" aria-label="Склад">
+      <mat-icon>inventory_2</mat-icon>
+      <span>Склад</span>
+    </a>
+    <a routerLink="/calendar"  routerLinkActive="active-nav-link" aria-label="Календар">
+      <mat-icon>calendar_month</mat-icon>
+      <span>Календар</span>
+    </a>
+  </nav>
+
 }

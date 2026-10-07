@@ -45,3 +45,8 @@ Thumbs.db
 # Environment variables (never commit real credentials!)
 .env.local
 .env
+
+# Internal docs (not for version control)
+prompt-for-back.md
+deploy.md
+/semantic-review/

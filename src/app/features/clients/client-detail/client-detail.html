@@ -61,7 +61,7 @@
                 <mat-icon class="text-slate-400">email</mat-icon>
                 <div>
                   <p class="text-xs text-slate-400">Email</p>
-                  <a [href]="'mailto:' + client.email" class="text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary truncate block max-w-[200px]">
+                  <a [href]="'mailto:' + client.email" class="text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary truncate block max-w-full">
                     {{ client.email }}
                   </a>
                 </div>
@@ -104,7 +104,7 @@
             </p>
           </div>
 
-          <div class="flex items-center gap-4">
+          <div class="flex flex-wrap items-center gap-3">
             <!-- Show Archived Toggle -->
             <mat-slide-toggle 
               [checked]="store.showArchived()" 
@@ -128,7 +128,7 @@
             <p class="text-slate-500 text-sm mt-1">Add a new bike to start creating service jobs.</p>
           </div>
         } @else {
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             @for (bike of store.currentFleet(); track bike.id) {
               <app-moto-card 
                 [motorcycle]="bike"

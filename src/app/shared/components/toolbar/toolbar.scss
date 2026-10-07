@@ -1,70 +1,123 @@
-.example-spacer {
-    flex: 1 1 auto;
-  }
-  
-  mat-toolbar {
-    background-color: var(--toolbar-bg);
+// ── Top toolbar ──────────────────────────────────────────────────────────────
+
+mat-toolbar.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background-color: var(--toolbar-bg);
+  color: var(--toolbar-color);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+  padding: 0 8px;
+  height: 56px;
+  min-height: 56px;
+  // Account for notch on devices with safe-area
+  padding-left: max(8px, var(--safe-left));
+  padding-right: max(8px, var(--safe-right));
+
+  button[mat-icon-button] {
     color: var(--toolbar-color);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 0 16px; 
-  
-    .example-spacer {
-      flex: 1 1 auto;
-    }
-  
-    // Стили для иконок-кнопок
-    button[mat-icon-button] {
-      color: var(--toolbar-color);
-      transition: background-color 0.2s ease-in-out;
-  
-      &:hover {
-        background-color: var(--toolbar-hover);
-      }
-  
-      &:active {
-        background-color: var(--toolbar-active);
-      }
-    }
-  
-    // Стили для заголовка приложения
-    span {
-      font-size: 1.25rem; 
-      font-weight: 500;
-    }
-  
-    // Стили для меню
-    mat-menu {
-      .mat-menu-panel {
-        background-color: var(--toolbar-bg);
-        color: var(--toolbar-color);
-      }
-  
-      button[mat-menu-item] {
-        color: var(--toolbar-color);
-        &:hover {
-          background-color: var(--toolbar-hover);
-        }
-        &:active {
-          background-color: var(--toolbar-active);
-        }
-        mat-icon {
-          color: var(--toolbar-color);
-        }
-        &[disabled] {
-          color: var(--toolbar-color);
-          opacity: 0.5;
-        }
-      }
-    }
+    transition: background-color 0.15s ease;
+
+    &:hover  { background-color: var(--toolbar-hover); }
+    &:active { background-color: var(--toolbar-active); }
+  }
+}
+
+// Active link highlight in desktop toolbar
+.active-toolbar-link {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+// ── Hamburger button — shown only below md (768px) ───────────────────────────
+
+.toolbar__hamburger {
+  display: flex !important;
+
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+// ── App title — hidden on very small phones (<360px), shown otherwise ─────────
+
+.toolbar__app-title {
+  display: none;
+
+  @media (min-width: 480px) {
+    display: inline;
+  }
+}
+
+// ── Desktop nav links — hidden on mobile, shown on md+ ───────────────────────
+
+.toolbar__desktop-nav {
+  display: none;
+
+  @media (min-width: 768px) {
+    display: flex;
+  }
+}
+
+// ── User phone — hidden on small screens ─────────────────────────────────────
+
+.toolbar__user-phone {
+  display: none;
+
+  @media (min-width: 900px) {
+    display: inline;
+  }
+}
+
+// ── Mobile drawer nav links ───────────────────────────────────────────────────
+
+.drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    color: var(--mat-sys-on-surface-variant);
+    transition: color 0.15s;
+    flex-shrink: 0;
   }
 
-  .toolbar {
-    &__text {
-      color: var(--toolbar-color);
-    }
-    
-    &__item {
-      display: flex;
-      padding: 0 10px;
-    }
+  &:hover, &:focus-visible {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+    color: var(--mat-sys-primary);
+
+    mat-icon { color: var(--mat-sys-primary); }
   }
+
+  &.drawer-link--active {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+    color: var(--mat-sys-primary);
+    font-weight: 700;
+
+    mat-icon { color: var(--mat-sys-primary); }
+  }
+}
+
+// ── Bottom nav — mobile only (<md) ───────────────────────────────────────────
+// The .bottom-nav styles live in global styles.scss.
+// Here we only hide it on larger screens.
+
+.bottom-nav {
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}

@@ -66,3 +66,177 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   display: flex !important;
   align-items: center;
 }
+
+// ── Responsive / cross-browser foundations ───────────────────────────────────
+
+// Smooth scrolling (respects prefers-reduced-motion)
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+// Safe-area insets for notched devices (iPhone X+, Android cutouts)
+:root {
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+
+  // Toolbar height used by app shell offset
+  --toolbar-height: 56px;
+}
+
+// Improve tap targets on touch devices — Material buttons are fine,
+// but raw <a> and small interactive elements benefit from this
+@media (pointer: coarse) {
+  a, button { -webkit-tap-highlight-color: transparent; }
+}
+
+// Prevent iOS text inflation
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+// Box-sizing reset (belt-and-suspenders)
+*, *::before, *::after { box-sizing: border-box; }
+
+// Horizontal overflow guard on all pages
+body { overflow-x: hidden; }
+
+// Mobile bottom nav spacer — pages need padding so content
+// isn't hidden behind the fixed bottom nav on small screens.
+// Applied via a global utility class set in app.html on <main>
+.has-bottom-nav {
+  padding-bottom: calc(64px + var(--safe-bottom));
+}
+
+// Mobile drawer overlay
+.mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 99;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// Mobile nav drawer slide-in panel
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(280px, 85vw);
+  z-index: 100;
+  background: var(--mat-sys-surface);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--safe-top);
+  padding-left: var(--safe-left);
+  animation: slideInLeft 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+// Bottom navigation bar (mobile only)
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  display: flex;
+  align-items: stretch;
+  background: var(--mat-sys-surface);
+  border-top: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 60%, transparent);
+  padding-bottom: var(--safe-bottom);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.07);
+
+  a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 8px 4px 6px;
+    text-decoration: none;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 56px;
+
+    mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+      line-height: 22px;
+    }
+
+    &.active-nav-link {
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+// Utility: force-hide scrollbar on overflow containers while keeping scrollability
+.scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+// Responsive table → card pattern used in inventory
+.mobile-table-card {
+  @media (max-width: 767px) {
+    display: block;
+
+    thead { display: none; }
+
+    tbody, tr {
+      display: block;
+      width: 100%;
+    }
+
+    tr {
+      margin-bottom: 12px;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 40%, transparent);
+      background: var(--mat-sys-surface);
+      overflow: hidden;
+    }
+
+    td {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 20%, transparent);
+      font-size: 13px;
+
+      &:last-child { border-bottom: none; }
+
+      &::before {
+        content: attr(data-label);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--mat-sys-on-surface-variant);
+        flex-shrink: 0;
+        margin-right: 8px;
+      }
+    }
+  }
+}

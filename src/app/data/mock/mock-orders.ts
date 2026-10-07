@@ -1,6 +1,14 @@
 import { WorkOrder } from '../models/work-order.model';
 import { OrderStatus } from '../enums/order-status.enum';
 
+/** Повертає завтрашній день — зручно для мок-записів, щоб будильник завжди спрацьовував */
+function tomorrow(hour = 10): Date {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(hour, 0, 0, 0);
+  return d;
+}
+
 export const MOCK_ORDERS: WorkOrder[] = [
   {
     id: 'order-1',
@@ -146,8 +154,8 @@ export const MOCK_ORDERS: WorkOrder[] = [
     subtotalLabor: 0,
     taxRate: 0.20,
     totalCost: 0,
-    scheduledDate: new Date('2025-09-05'),
-    estimatedCompletionDate: new Date('2025-09-05'),
+    scheduledDate: tomorrow(10),
+    estimatedCompletionDate: tomorrow(14),
     createdAt: new Date('2025-08-26'),
     updatedAt: new Date('2025-08-26'),
   },

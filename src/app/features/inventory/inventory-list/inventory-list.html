@@ -97,7 +97,7 @@
   } @else {
     <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-0">
       <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-slate-650 dark:text-slate-300">
+        <table class="w-full text-sm text-left text-slate-650 dark:text-slate-300 mobile-table-card">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/80 text-xs uppercase text-slate-400 font-bold">
             <tr>
               <th class="p-4 pl-6">Part Info</th>
@@ -105,13 +105,13 @@
               <th class="p-4 text-right">Price</th>
               <th class="p-4 text-center">Stock Level</th>
               <th class="p-4 text-center">Location</th>
-              <th class="p-4 text-right pr-6">Stock Adjust / Actions</th>
+              <th class="p-4 text-right pr-6">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
             @for (item of store.filteredItems(); track item.id) {
               <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-850/20">
-                <td class="p-4 pl-6">
+                <td class="p-4 pl-6" data-label="Part Info">
                   <div class="font-bold text-slate-800 dark:text-slate-100">{{ item.name }}</div>
                   <div class="flex items-center gap-2 mt-0.5">
                     @if (item.brand) {
@@ -120,13 +120,13 @@
                     <span class="text-[10px] text-slate-400 font-mono tracking-wider uppercase">SKU: {{ item.sku }}</span>
                   </div>
                 </td>
-                <td class="p-4 text-slate-500 font-medium">
+                <td class="p-4 text-slate-500 font-medium" data-label="Category">
                   {{ item.category }}
                 </td>
-                <td class="p-4 text-right font-semibold text-slate-800 dark:text-slate-200">
+                <td class="p-4 text-right font-semibold text-slate-800 dark:text-slate-200" data-label="Price">
                   {{ item.unitPrice | uah }}
                 </td>
-                <td class="p-4 text-center">
+                <td class="p-4 text-center" data-label="Stock">
                   <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
                     [class.bg-emerald-555/10]="item.quantity > item.minThreshold"
                     [class.text-emerald-600]="item.quantity > item.minThreshold"
@@ -135,10 +135,10 @@
                     {{ item.quantity }} in stock (Min: {{ item.minThreshold }})
                   </span>
                 </td>
-                <td class="p-4 text-center font-mono text-xs text-slate-500">
+                <td class="p-4 text-center font-mono text-xs text-slate-500" data-label="Location">
                   {{ item.location || 'N/A' }}
                 </td>
-                <td class="p-4 text-right pr-6">
+                <td class="p-4 text-right pr-6" data-label="Actions">
                   <div class="flex items-center justify-end gap-1">
                     <button mat-button class="!min-w-0 !p-1.5 !h-8 !w-8 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500" title="Consume 1" [disabled]="item.quantity <= 0" (click)="adjustQty(item.id, -1)">
                       -1
@@ -146,7 +146,6 @@
                     <button mat-button class="!min-w-0 !p-1.5 !h-8 !w-8 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500 mr-2" title="Restock 1" (click)="adjustQty(item.id, 1)">
                       +1
                     </button>
-
                     <button mat-icon-button color="warn" title="Delete Part" (click)="deleteItem(item.id)">
                       <mat-icon>delete_outline</mat-icon>
                     </button>

@@ -52,6 +52,39 @@ export class OrdersStore {
     return result;
   });
 
+  /**
+   * Заказы, у которых scheduledDate або estimatedCompletionDate
+   * попадають на сьогодні або найближчі 7 днів (і заказ ще не завершений/скасований).
+   * Використовується в тулбарі для іконки будильника.
+   */
+  readonly upcomingOrders = computed(() => {
+    const now   = new Date();
+    const start = new Date(now); start.setHours(0, 0, 0, 0);
+    const end   = new Date(start); end.setDate(end.getDate() + 7);
+
+    const activeStatuses = new Set<OrderStatus>([
+      OrderStatus.PENDING,
+      OrderStatus.IN_PROGRESS,
+      OrderStatus.WAITING_PARTS,
+      OrderStatus.INVOICED,
+    ]);
+
+    return this.orders()
+      .filter(o => {
+        if (!activeStatuses.has(o.status)) return false;
+        const dates = [o.scheduledDate, o.estimatedCompletionDate].filter(Boolean) as Date[];
+        return dates.some(d => {
+          const t = new Date(d).getTime();
+          return t >= start.getTime() && t < end.getTime();
+        });
+      })
+      .sort((a, b) => {
+        const aDate = a.scheduledDate ?? a.estimatedCompletionDate!;
+        const bDate = b.scheduledDate ?? b.estimatedCompletionDate!;
+        return new Date(aDate).getTime() - new Date(bDate).getTime();
+      });
+  });
+
   // ─── Actions ──────────────────────────────────────────────────────────────
 
   async loadAll(): Promise<void> {

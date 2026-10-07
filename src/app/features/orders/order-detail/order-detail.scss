@@ -1,5 +1,9 @@
-/* OrderDetail host layout */
 :host {
   display: block;
   min-height: 100vh;
+}
+
+.arrow-back {
+  display: flex;
+  align-items: center;
 }

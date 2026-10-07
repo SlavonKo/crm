@@ -1,7 +1,7 @@
 <app-toolbar></app-toolbar>
 <main
   class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200"
-  [class.min-h-[calc(100vh-64px)]]="auth.isAuthenticated()"
+  [class.main--authenticated]="auth.isAuthenticated()"
   [class.min-h-screen]="!auth.isAuthenticated()"
 >
   <router-outlet></router-outlet>

@@ -1,0 +1,14 @@
+// ── App shell layout ─────────────────────────────────────────────────────────
+
+main.main--authenticated {
+  // Offset for the sticky 56px toolbar
+  min-height: calc(100vh - 56px);
+
+  // On mobile (<md) add padding for the fixed 56px bottom nav + safe area
+  padding-bottom: calc(56px + var(--safe-bottom, 0px));
+
+  @media (min-width: 768px) {
+    // No bottom nav on tablet/desktop
+    padding-bottom: 0;
+  }
+}
