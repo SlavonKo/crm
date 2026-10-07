@@ -1,4 +1,4 @@
-import { CalendarEvent } from '../../features/calendar/calendar.store';
+import { CalendarEvent } from '../models/calendar-event.model';
 
 const d = (offsetDays: number, hour: number, minute = 0): Date => {
   const date = new Date();

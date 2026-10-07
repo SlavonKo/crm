@@ -8,6 +8,8 @@
 
 # Node
 /node_modules
+/backend/node_modules
+/backend/dist
 npm-debug.log
 yarn-error.log
 
@@ -45,6 +47,7 @@ Thumbs.db
 # Environment variables (never commit real credentials!)
 .env.local
 .env
+# .env.encrypted is intentionally NOT ignored — it's safe to commit (ciphertext only)
 
 # Internal docs (not for version control)
 prompt-for-back.md

@@ -10,12 +10,21 @@
         <h1 class="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
           MotoWorkshop CRM
         </h1>
-        <p class="text-sm text-slate-400">
-          Введіть номер телефону для входу
-        </p>
+
+        @switch (authService.authStep()) {
+          @case ('credentials') {
+            <p class="text-sm text-slate-400">Введіть email та пароль для входу</p>
+          }
+          @case ('totp') {
+            <p class="text-sm text-slate-400">Введіть код з Google Authenticator</p>
+          }
+          @case ('setup-totp') {
+            <p class="text-sm text-slate-400">Налаштування двофакторної автентифікації</p>
+          }
+        }
       </div>
 
-      <!-- Error -->
+      <!-- Error banner -->
       @if (authService.authError()) {
         <div class="flex items-center gap-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 p-3 rounded-xl border border-red-200 dark:border-red-800 text-sm">
           <mat-icon class="!text-base shrink-0">error_outline</mat-icon>
@@ -23,32 +32,200 @@
         </div>
       }
 
-      <!-- Form -->
-      <form [formGroup]="phoneForm" (ngSubmit)="onLogin()" class="space-y-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Номер телефону</mat-label>
-          <input
-            matInput
-            formControlName="phone"
-            placeholder="+380671234567"
-            inputmode="tel"
-            autocomplete="tel"
-          >
-          <mat-icon matSuffix class="text-slate-400">phone</mat-icon>
-          <mat-error *ngIf="phoneForm.get('phone')?.hasError('required')">Обов'язкове поле</mat-error>
-          <mat-error *ngIf="phoneForm.get('phone')?.hasError('pattern')">Невірний формат номера</mat-error>
-        </mat-form-field>
+      <!-- ── STEP 1: Email + Password ───────────────────────────────────── -->
+      @if (authService.authStep() === 'credentials') {
+        <form [formGroup]="credentialsForm" (ngSubmit)="onSubmitCredentials()" class="space-y-4">
 
-        <button
-          mat-flat-button
-          color="primary"
-          type="submit"
-          class="w-full !rounded-xl !h-12 !text-base font-semibold"
-          [disabled]="phoneForm.invalid"
-        >
-          Увійти
-        </button>
-      </form>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              formControlName="email"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              inputmode="email"
+            >
+            <mat-icon matSuffix class="text-slate-400">alternate_email</mat-icon>
+            @if (credentialsForm.get('email')?.invalid && credentialsForm.get('email')?.touched) {
+              <mat-error>Введіть коректний email</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Пароль</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            >
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="togglePassword()"
+              class="text-slate-400"
+              [attr.aria-label]="showPassword() ? 'Приховати пароль' : 'Показати пароль'"
+            >
+              <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (credentialsForm.get('password')?.invalid && credentialsForm.get('password')?.touched) {
+              <mat-error>Мінімум 6 символів</mat-error>
+            }
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="w-full !rounded-xl !h-12 !text-base font-semibold"
+            [disabled]="credentialsForm.invalid || isLoading()"
+          >
+            @if (isLoading()) {
+              <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
+            } @else {
+              Далі
+            }
+          </button>
+        </form>
+      }
+
+      <!-- ── STEP 2a: First-time TOTP setup (QR-code scan) ─────────────── -->
+      @if (authService.authStep() === 'setup-totp') {
+        <div class="space-y-5">
+
+          <!-- Instruction -->
+          <div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-xl p-4 space-y-2">
+            <p class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+              <mat-icon class="!text-base align-middle mr-1">qr_code_scanner</mat-icon>
+              Перший вхід — налаштуйте 2FA
+            </p>
+            <ol class="text-xs text-indigo-600 dark:text-indigo-400 space-y-1 list-decimal list-inside">
+              <li>Встановіть <strong>Google Authenticator</strong> або <strong>Authy</strong></li>
+              <li>Натисніть «+» → «Скануйте QR-код»</li>
+              <li>Введіть 6-значний код нижче</li>
+            </ol>
+          </div>
+
+          <!-- QR-code -->
+          @if (qrCodeUrl()) {
+            <div class="flex justify-center">
+              <img
+                [src]="qrCodeUrl()!"
+                alt="QR-код для Google Authenticator"
+                class="w-48 h-48 rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-2"
+              >
+            </div>
+          } @else {
+            <div class="flex justify-center items-center h-48">
+              <mat-spinner diameter="40"></mat-spinner>
+            </div>
+          }
+
+          <!-- Code input -->
+          <form [formGroup]="totpForm" (ngSubmit)="onSubmitTotp()" class="space-y-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>6-значний код</mat-label>
+              <input
+                matInput
+                formControlName="code"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                placeholder="000000"
+                maxlength="6"
+              >
+              <mat-icon matSuffix class="text-slate-400">pin</mat-icon>
+              @if (totpForm.get('code')?.invalid && totpForm.get('code')?.touched) {
+                <mat-error>Введіть 6-значний код</mat-error>
+              }
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              class="w-full !rounded-xl !h-12 !text-base font-semibold"
+              [disabled]="totpForm.invalid || isLoading()"
+            >
+              @if (isLoading()) {
+                <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
+              } @else {
+                Підтвердити та увійти
+              }
+            </button>
+
+            <button
+              mat-button
+              type="button"
+              class="w-full text-slate-400 text-sm"
+              (click)="goBackToCredentials()"
+            >
+              <mat-icon class="!text-sm align-middle mr-1">arrow_back</mat-icon>
+              Назад
+            </button>
+          </form>
+        </div>
+      }
+
+      <!-- ── STEP 2b: Regular TOTP (subsequent logins) ──────────────────── -->
+      @if (authService.authStep() === 'totp') {
+        <div class="space-y-4">
+
+          <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex items-start gap-3">
+            <mat-icon class="text-indigo-500 shrink-0 mt-0.5">smartphone</mat-icon>
+            <p class="text-sm text-slate-600 dark:text-slate-400">
+              Відкрийте <strong>Google Authenticator</strong> і введіть поточний 6-значний код для
+              <strong>MotoWorkshop CRM</strong>.
+            </p>
+          </div>
+
+          <form [formGroup]="totpForm" (ngSubmit)="onSubmitTotp()" class="space-y-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Код автентифікатора</mat-label>
+              <input
+                matInput
+                formControlName="code"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                placeholder="000000"
+                maxlength="6"
+              >
+              <mat-icon matSuffix class="text-slate-400">pin</mat-icon>
+              @if (totpForm.get('code')?.invalid && totpForm.get('code')?.touched) {
+                <mat-error>Введіть 6-значний код</mat-error>
+              }
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              class="w-full !rounded-xl !h-12 !text-base font-semibold"
+              [disabled]="totpForm.invalid || isLoading()"
+            >
+              @if (isLoading()) {
+                <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
+              } @else {
+                Увійти
+              }
+            </button>
+
+            <button
+              mat-button
+              type="button"
+              class="w-full text-slate-400 text-sm"
+              (click)="goBackToCredentials()"
+            >
+              <mat-icon class="!text-sm align-middle mr-1">arrow_back</mat-icon>
+              Назад
+            </button>
+          </form>
+        </div>
+      }
 
     </div>
   </mat-card>

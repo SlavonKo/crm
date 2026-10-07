@@ -1,20 +1,8 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { MOCK_CALENDAR_EVENTS } from '../../data/mock';
+import { CalendarEvent, CalendarViewMode } from '../../data/models/calendar-event.model';
 
-export interface CalendarEvent {
-  id: string;
-  orderId?: string;
-  clientId?: string;
-  motorcycleId?: string;
-  title: string;
-  start: Date;
-  end: Date;
-  color?: string;
-  technicianId?: string;
-  notes?: string;
-}
-
-export type CalendarViewMode = 'day' | 'week' | 'month';
+export type { CalendarEvent, CalendarViewMode };
 
 let eventIdCounter = 100;
 
