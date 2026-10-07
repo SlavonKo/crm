@@ -9,5 +9,5 @@ export enum THEMES {
   light = 'light-theme',
 }
 
-export const LANG_KEY = 'lang';
+export const LANG_KEY = 'crm:lang';
 export const THEME_KEY = 'theme';

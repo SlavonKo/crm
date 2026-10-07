@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { OrderStatus } from '../../../data/enums/order-status.enum';
 import { getOrderBadgeClass, getOrderStatusLabel, ORDER_STATUS_OPTIONS } from '../order-status.helpers';
 import { UahPipe } from '../../../shared/pipes/uah.pipe';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-order-detail',
@@ -26,6 +27,7 @@ import { UahPipe } from '../../../shared/pipes/uah.pipe';
     MatProgressSpinnerModule,
     MatMenuModule,
     UahPipe,
+    TranslocoModule,
   ],
   templateUrl: './order-detail.html',
   styleUrl: './order-detail.scss',

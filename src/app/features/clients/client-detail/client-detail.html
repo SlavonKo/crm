@@ -3,10 +3,10 @@
   <div class="flex items-center gap-2 text-sm text-slate-500">
     <a routerLink="/clients" class="hover:text-primary transition-colors flex items-center gap-1">
       <mat-icon class="!w-4 !h-4 !text-base ARROW-BACK">arrow_back</mat-icon>
-      Back to Clients
+      {{ 'clients.backToClients' | transloco }}
     </a>
     <span>/</span>
-    <span class="text-slate-700 dark:text-slate-300 font-medium">Client Details</span>
+    <span class="text-slate-700 dark:text-slate-300 font-medium">{{ 'clients.clientDetails' | transloco }}</span>
   </div>
 
   @if (store.isLoading()) {
@@ -15,7 +15,7 @@
     </div>
   } @else if (store.error()) {
     <div class="bg-red-50 text-red-600 p-4 rounded-xl border border-red-150">
-      <strong>Error loading details:</strong> {{ store.error() }}
+      <strong>{{ 'common.error' | transloco }}:</strong> {{ store.error() }}
     </div>
   } @else if (store.selectedClient()) {
     @let client = store.selectedClient()!;
@@ -33,13 +33,13 @@
                 <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100">
                   {{ client.firstName }} {{ client.lastName }}
                 </h2>
-                <span class="text-xs text-slate-400">Customer ID: {{ client.id }}</span>
+                <span class="text-xs text-slate-400">{{ 'clients.customerId' | transloco }}: {{ client.id }}</span>
               </div>
             </div>
 
             <button mat-icon-button
               class="text-slate-400 hover:text-primary"
-              title="Редагувати клієнта"
+              [title]="'common.edit' | transloco"
               (click)="onEditClient()">
               <mat-icon>edit</mat-icon>
             </button>
@@ -49,7 +49,7 @@
             <div class="flex items-center gap-3">
               <mat-icon class="text-slate-400">phone</mat-icon>
               <div>
-                <p class="text-xs text-slate-400">Phone</p>
+                <p class="text-xs text-slate-400">{{ 'clients.phone' | transloco }}</p>
                 <a [href]="'tel:' + client.phone" class="text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary">
                   {{ client.phone }}
                 </a>
@@ -60,7 +60,7 @@
               <div class="flex items-center gap-3">
                 <mat-icon class="text-slate-400">email</mat-icon>
                 <div>
-                  <p class="text-xs text-slate-400">Email</p>
+                  <p class="text-xs text-slate-400">{{ 'clients.email' | transloco }}</p>
                   <a [href]="'mailto:' + client.email" class="text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-primary truncate block max-w-full">
                     {{ client.email }}
                   </a>
@@ -72,7 +72,7 @@
               <div class="flex items-start gap-3">
                 <mat-icon class="text-slate-400 mt-0.5">location_on</mat-icon>
                 <div>
-                  <p class="text-xs text-slate-400">Address</p>
+                  <p class="text-xs text-slate-400">{{ 'clients.address' | transloco }}</p>
                   <p class="text-sm text-slate-700 dark:text-slate-200 font-medium">
                     {{ client.address }}
                   </p>
@@ -83,7 +83,7 @@
 
           @if (client.notes) {
             <div class="border-t border-slate-100 dark:border-slate-800/80 pt-4">
-              <p class="text-xs text-slate-400 mb-1">Administrative Notes</p>
+              <p class="text-xs text-slate-400 mb-1">{{ 'clients.adminNotes' | transloco }}</p>
               <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/40 dark:border-slate-800/40 text-sm text-slate-650 italic">
                 {{ client.notes }}
               </div>
@@ -97,10 +97,10 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
-              Garage & Fleet
+              {{ 'clients.garageFleet' | transloco }}
             </h2>
             <p class="text-sm text-slate-500">
-              Manage bikes owned by this client.
+              {{ 'clients.garageSubtitle' | transloco }}
             </p>
           </div>
 
@@ -110,12 +110,12 @@
               [checked]="store.showArchived()" 
               (change)="store.toggleShowArchived()" 
               color="primary">
-              Show Archived
+              {{ 'clients.showArchived' | transloco }}
             </mat-slide-toggle>
 
             <button mat-flat-button color="primary" class="!rounded-xl" (click)="openAddMotoDialog()">
               <mat-icon class="mr-1">add</mat-icon>
-              Add Motorcycle
+              {{ 'clients.addMotorcycle' | transloco }}
             </button>
           </div>
         </div>
@@ -124,8 +124,8 @@
         @if (store.currentFleet().length === 0) {
           <div class="text-center py-16 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
             <mat-icon class="text-slate-400 !w-12 !h-12 !text-5xl mb-4">two_wheeler</mat-icon>
-            <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">No motorcycles found</h3>
-            <p class="text-slate-500 text-sm mt-1">Add a new bike to start creating service jobs.</p>
+            <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">{{ 'clients.noMotorcycles' | transloco }}</h3>
+            <p class="text-slate-500 text-sm mt-1">{{ 'clients.noMotorcyclesHint' | transloco }}</p>
           </div>
         } @else {
           <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -146,8 +146,7 @@
   } @else {
     <div class="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl">
       <mat-icon class="text-slate-400 !w-12 !h-12 !text-5xl mb-4">error_outline</mat-icon>
-      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">Client not found</h3>
-      <p class="text-slate-500 text-sm mt-1">The requested customer record does not exist or has been deleted.</p>
+      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">{{ 'clients.clientNotFound' | transloco }}</h3>
     </div>
   }
 </div>

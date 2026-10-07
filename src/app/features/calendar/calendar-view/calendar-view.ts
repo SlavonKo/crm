@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-calendar-view',
@@ -24,6 +25,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
     MatCardModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    TranslocoModule,
   ],
   templateUrl: './calendar-view.html',
   styleUrl: './calendar-view.scss',

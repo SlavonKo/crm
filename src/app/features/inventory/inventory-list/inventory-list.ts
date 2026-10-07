@@ -27,6 +27,7 @@ import { InventoryItem } from '../../../data/models/inventory-item.model';
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     UahPipe,
+    TranslocoModule,
   ],
   templateUrl: './inventory-list.html',
   styleUrl: './inventory-list.scss',

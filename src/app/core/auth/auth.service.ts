@@ -21,7 +21,7 @@ export interface WhitelistEntry {
 }
 
 const WHITELIST_EMAILS: Record<string, WhitelistEntry> = {
-  'kozyrewjacheslav@gmail.com': { displayName: 'Ярослав К.', uid: 'user-uid-1' },
+  'kozyrewjacheslav@gmail.com': { displayName: 'Вячеслав К.', uid: 'user-uid-1' },
   // 'another@example.com': { displayName: 'Another User', uid: 'user-uid-2' },
 };
 
@@ -36,9 +36,9 @@ const WHITELIST_EMAILS: Record<string, WhitelistEntry> = {
  *   1. Generate a new hash: CryptoJS.SHA256('newpassword').toString()
  *   2. Replace the value below.
  *
- * Current plain-text password: CRM_2024!
+ * Current plain-text password: CRM_2026!
  */
-const STATIC_PASSWORD_HASH = CryptoJS.SHA256('CRM_2024!').toString();
+const STATIC_PASSWORD_HASH = CryptoJS.SHA256('CRM_2026!').toString();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TOTP secrets storage key

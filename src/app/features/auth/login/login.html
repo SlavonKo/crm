@@ -8,12 +8,12 @@
           <mat-icon class="!text-white !text-3xl">two_wheeler</mat-icon>
         </div>
         <h1 class="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
-          MotoWorkshop CRM
+          {{ 'auth.title' | transloco }}
         </h1>
 
         @switch (authService.authStep()) {
           @case ('credentials') {
-            <p class="text-sm text-slate-400">Введіть email та пароль для входу</p>
+            <p class="text-sm text-slate-400">{{ 'auth.subtitle' | transloco }}</p>
           }
           @case ('totp') {
             <p class="text-sm text-slate-400">Введіть код з Google Authenticator</p>
@@ -48,12 +48,12 @@
             >
             <mat-icon matSuffix class="text-slate-400">alternate_email</mat-icon>
             @if (credentialsForm.get('email')?.invalid && credentialsForm.get('email')?.touched) {
-              <mat-error>Введіть коректний email</mat-error>
+              <mat-error>{{ 'common.invalidEmail' | transloco }}</mat-error>
             }
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Пароль</mat-label>
+            <mat-label>{{ 'auth.phoneLabel' | transloco }}</mat-label>
             <input
               matInput
               formControlName="password"
@@ -72,7 +72,7 @@
               <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
             @if (credentialsForm.get('password')?.invalid && credentialsForm.get('password')?.touched) {
-              <mat-error>Мінімум 6 символів</mat-error>
+              <mat-error>{{ 'common.required' | transloco }}</mat-error>
             }
           </mat-form-field>
 
@@ -86,7 +86,7 @@
             @if (isLoading()) {
               <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
             } @else {
-              Далі
+              {{ 'auth.loginButton' | transloco }}
             }
           </button>
         </form>
@@ -139,7 +139,7 @@
               >
               <mat-icon matSuffix class="text-slate-400">pin</mat-icon>
               @if (totpForm.get('code')?.invalid && totpForm.get('code')?.touched) {
-                <mat-error>Введіть 6-значний код</mat-error>
+                <mat-error>{{ 'common.required' | transloco }}</mat-error>
               }
             </mat-form-field>
 
@@ -164,7 +164,7 @@
               (click)="goBackToCredentials()"
             >
               <mat-icon class="!text-sm align-middle mr-1">arrow_back</mat-icon>
-              Назад
+              {{ 'common.back' | transloco }}
             </button>
           </form>
         </div>
@@ -196,7 +196,7 @@
               >
               <mat-icon matSuffix class="text-slate-400">pin</mat-icon>
               @if (totpForm.get('code')?.invalid && totpForm.get('code')?.touched) {
-                <mat-error>Введіть 6-значний код</mat-error>
+                <mat-error>{{ 'common.required' | transloco }}</mat-error>
               }
             </mat-form-field>
 
@@ -210,7 +210,7 @@
               @if (isLoading()) {
                 <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
               } @else {
-                Увійти
+                {{ 'auth.loginButton' | transloco }}
               }
             </button>
 
@@ -221,7 +221,7 @@
               (click)="goBackToCredentials()"
             >
               <mat-icon class="!text-sm align-middle mr-1">arrow_back</mat-icon>
-              Назад
+              {{ 'common.back' | transloco }}
             </button>
           </form>
         </div>

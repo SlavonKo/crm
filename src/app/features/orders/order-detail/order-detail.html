@@ -4,17 +4,17 @@
     <div class="flex items-center gap-2 text-sm text-slate-500">
       <a routerLink="/orders" class="hover:text-primary transition-colors flex items-center gap-1">
         <mat-icon class="!w-4 !h-4 !text-base arrow-back">arrow_back</mat-icon>
-        Back to Orders
+        {{ 'orders.backToOrders' | transloco }}
       </a>
       <span>/</span>
-      <span class="text-slate-700 dark:text-slate-300 font-medium">Order Detail</span>
+      <span class="text-slate-700 dark:text-slate-300 font-medium">{{ 'orders.orderDetail' | transloco }}</span>
     </div>
 
     <!-- Actions / Status Menu -->
     @if (store.activeOrder()) {
       @let order = store.activeOrder()!;
       <div class="flex items-center gap-3">
-        <span class="text-sm text-slate-400 font-medium">Update Status:</span>
+        <span class="text-sm text-slate-400 font-medium">{{ 'orders.updateStatus' | transloco }}:</span>
         <button mat-flat-button [matMenuTriggerFor]="statusMenu" class="!rounded-xl"
           [class]="getBadgeClass(order.status)">
           {{ getStatusLabel(order.status) }}
@@ -37,7 +37,7 @@
     </div>
   } @else if (store.error()) {
     <div class="bg-red-50 text-red-600 p-4 rounded-xl border border-red-150">
-      <strong>Error loading order details:</strong> {{ store.error() }}
+      <strong>{{ 'common.error' | transloco }}:</strong> {{ store.error() }}
     </div>
   } @else if (store.activeOrder()) {
     @let order = store.activeOrder()!;
@@ -48,7 +48,7 @@
         <!-- Order Header info -->
         <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
           <div>
-            <span class="text-[10px] uppercase font-bold tracking-wider text-primary">Job Sheet</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-primary">{{ 'orders.jobSheet' | transloco }}</span>
             <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100 mt-1">
               {{ order.title }}
             </h2>
@@ -65,7 +65,7 @@
         <!-- Client info -->
         @if (client()) {
           <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
-            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Client</h3>
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{{ 'orders.client' | transloco }}</h3>
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-base uppercase">
                 {{ client()!.firstName.slice(0,1) }}{{ client()!.lastName.slice(0,1) }}
@@ -83,7 +83,7 @@
         <!-- Motorcycle info -->
         @if (motorcycle()) {
           <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
-            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Motorcycle</h3>
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{{ 'orders.motorcycle' | transloco }}</h3>
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/20 text-sky-600 flex items-center justify-center">
                 <mat-icon>two_wheeler</mat-icon>
@@ -105,24 +105,24 @@
         <!-- Job Details Breakdown -->
         <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-6">
           <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100">
-            Work Breakdown
+            {{ 'orders.workBreakdown' | transloco }}
           </h2>
 
           <!-- Labor Items -->
           <div class="space-y-3">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Labor Items</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'orders.laborItems' | transloco }}</h3>
             @if (order.laborItems.length === 0) {
-              <p class="text-sm italic text-slate-400">No labor entries recorded.</p>
+              <p class="text-sm italic text-slate-400">{{ 'orders.noLaborItems' | transloco }}</p>
             } @else {
               <!-- Desktop table -->
               <div class="hidden sm:block overflow-x-auto">
                 <table class="w-full text-sm text-left text-slate-600 dark:text-slate-350">
                   <thead>
                     <tr class="border-b border-slate-100 dark:border-slate-800/80 text-xs uppercase text-slate-400 font-semibold">
-                      <th class="pb-2">Description</th>
-                      <th class="pb-2 text-right">Hours</th>
-                      <th class="pb-2 text-right">Rate</th>
-                      <th class="pb-2 text-right">Total</th>
+                      <th class="pb-2">{{ 'orders.description' | transloco }}</th>
+                      <th class="pb-2 text-right">{{ 'orders.hours' | transloco }}</th>
+                      <th class="pb-2 text-right">{{ 'orders.rate' | transloco }}</th>
+                      <th class="pb-2 text-right">{{ 'common.total' | transloco }}</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
@@ -154,19 +154,19 @@
 
           <!-- Parts Used -->
           <div class="space-y-3 border-t border-slate-100 dark:border-slate-800/80 pt-6">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Parts Used</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'orders.partsUsed' | transloco }}</h3>
             @if (order.partsUsed.length === 0) {
-              <p class="text-sm italic text-slate-400">No parts used recorded.</p>
+              <p class="text-sm italic text-slate-400">{{ 'orders.noPartsUsed' | transloco }}</p>
             } @else {
               <!-- Desktop table -->
               <div class="hidden sm:block overflow-x-auto">
                 <table class="w-full text-sm text-left text-slate-600 dark:text-slate-350">
                   <thead>
                     <tr class="border-b border-slate-100 dark:border-slate-800/80 text-xs uppercase text-slate-400 font-semibold">
-                      <th class="pb-2">Part Name / SKU</th>
-                      <th class="pb-2 text-right">Qty</th>
-                      <th class="pb-2 text-right">Unit Price</th>
-                      <th class="pb-2 text-right">Total</th>
+                      <th class="pb-2">{{ 'orders.partName' | transloco }}</th>
+                      <th class="pb-2 text-right">{{ 'orders.qty' | transloco }}</th>
+                      <th class="pb-2 text-right">{{ 'orders.unitPrice' | transloco }}</th>
+                      <th class="pb-2 text-right">{{ 'common.total' | transloco }}</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
@@ -203,71 +203,21 @@
           <!-- Totals Breakdown -->
           <div class="border-t border-slate-100 dark:border-slate-800/80 pt-6 flex flex-col items-end space-y-2 text-sm">
             <div class="flex justify-between w-full sm:max-w-xs">
-              <span class="text-slate-400">Labor Subtotal:</span>
+              <span class="text-slate-400">{{ 'orders.laborSubtotal' | transloco }}:</span>
               <span class="font-medium text-slate-700 dark:text-slate-300">{{ order.subtotalLabor | uah }}</span>
             </div>
             <div class="flex justify-between w-full sm:max-w-xs">
-              <span class="text-slate-400">Parts Subtotal:</span>
+              <span class="text-slate-400">{{ 'orders.partsSubtotal' | transloco }}:</span>
               <span class="font-medium text-slate-700 dark:text-slate-300">{{ order.subtotalParts | uah }}</span>
             </div>
             <div class="flex justify-between w-full sm:max-w-xs">
-              <span class="text-slate-400">Tax Rate:</span>
+              <span class="text-slate-400">{{ 'orders.taxRate' | transloco }}:</span>
               <span class="font-medium text-slate-700 dark:text-slate-300">{{ order.taxRate * 100 }}%</span>
             </div>
             <div class="flex justify-between w-full sm:max-w-xs border-t border-slate-100 dark:border-slate-800/80 pt-2 text-lg">
-              <span class="font-bold text-slate-800 dark:text-slate-100">Total Invoice:</span>
+              <span class="font-bold text-slate-800 dark:text-slate-100">{{ 'orders.totalInvoice' | transloco }}:</span>
               <span class="font-black text-primary">{{ order.totalCost | uah }}</span>
             </div>
-          </div>
-        </mat-card>
-
-        <!-- Dates -->
-        <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 space-y-4">
-          <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <mat-icon class="text-slate-400 !text-base">calendar_month</mat-icon>
-            Дати
-          </h3>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-
-            <!-- Дата створення -->
-            <div class="flex flex-col gap-1">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Дата створення</span>
-              @if (order.scheduledDate) {
-                <span class="font-medium text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-                  <mat-icon class="!w-4 !h-4 !text-base text-slate-400">event</mat-icon>
-                  {{ order.scheduledDate | date:'dd.MM.yyyy' }}
-                </span>
-              } @else {
-                <span class="text-slate-400 italic text-xs">Не вказано</span>
-              }
-            </div>
-
-            <!-- Поступив у роботу -->
-            <div class="flex flex-col gap-1">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Поступив у роботу</span>
-              @if (order.startedAt) {
-                <span class="font-medium text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-                  <mat-icon class="!w-4 !h-4 !text-base text-emerald-400">play_circle</mat-icon>
-                  {{ order.startedAt | date:'dd.MM.yyyy' }}
-                </span>
-              } @else {
-                <span class="text-slate-400 italic text-xs">Не вказано</span>
-              }
-            </div>
-
-            <!-- Орієнтовна видача -->
-            <div class="flex flex-col gap-1">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Орієнтовна видача</span>
-              @if (order.estimatedCompletionDate) {
-                <span class="font-medium text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-                  <mat-icon class="!w-4 !h-4 !text-base text-amber-400">event_available</mat-icon>
-                  {{ order.estimatedCompletionDate | date:'dd.MM.yyyy' }}
-                </span>
-              } @else {
-                <span class="text-slate-400 italic text-xs">Не вказано</span>
-              }
-            </div>
-
           </div>
         </mat-card>
 
@@ -279,10 +229,10 @@
             <div class="space-y-4">
               <div class="flex items-center gap-2">
                 <mat-icon class="text-indigo-500">psychology</mat-icon>
-                <h3 class="font-bold text-slate-800 dark:text-slate-100">AI Diagnostic Advice</h3>
+                <h3 class="font-bold text-slate-800 dark:text-slate-100">{{ 'orders.aiDiagnostic' | transloco }}</h3>
               </div>
               <p class="text-xs text-slate-400 leading-relaxed">
-                Generate troubleshooting tips and checklists based on symptoms and bike stats.
+                {{ 'orders.aiDiagnosticHint' | transloco }}
               </p>
 
               @if (aiAdvice()) {
@@ -299,7 +249,7 @@
                 } @else {
                   <mat-icon class="mr-1">auto_awesome</mat-icon>
                 }
-                Ask AI Assistant
+                {{ 'orders.askAi' | transloco }}
               </button>
             </div>
           </mat-card>
@@ -309,10 +259,10 @@
             <div class="space-y-4">
               <div class="flex items-center gap-2">
                 <mat-icon class="text-violet-500">receipt_long</mat-icon>
-                <h3 class="font-bold text-slate-800 dark:text-slate-100">AI Formatted Receipt</h3>
+                <h3 class="font-bold text-slate-800 dark:text-slate-100">{{ 'orders.aiReceipt' | transloco }}</h3>
               </div>
               <p class="text-xs text-slate-400 leading-relaxed">
-                Compile a professional, print-ready HTML customer receipt layout using Groq LLM.
+                {{ 'orders.aiReceiptHint' | transloco }}
               </p>
 
               @if (safeReceiptHtml()) {
@@ -329,7 +279,7 @@
                 } @else {
                   <mat-icon class="mr-1">receipt</mat-icon>
                 }
-                {{ safeReceiptHtml() ? 'Regenerate Receipt' : 'Generate HTML Receipt' }}
+                {{ safeReceiptHtml() ? ('orders.regenerateReceipt' | transloco) : ('orders.generateReceipt' | transloco) }}
               </button>
             </div>
           </mat-card>
@@ -342,8 +292,7 @@
   } @else {
     <div class="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl">
       <mat-icon class="text-slate-400 !w-12 !h-12 !text-5xl mb-4">error_outline</mat-icon>
-      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">Order not found</h3>
-      <p class="text-slate-500 text-sm mt-1">The requested job order could not be located.</p>
+      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">{{ 'orders.orderNotFound' | transloco }}</h3>
     </div>
   }
 </div>

@@ -3,16 +3,16 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
       <h1 class="text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
-        Work Orders
+        {{ 'orders.title' | transloco }}
       </h1>
       <p class="text-sm text-slate-500 mt-1">
-        Manage diagnostic logs, repair schedules, invoices, and AI receipts.
+        {{ 'orders.subtitle' | transloco }}
       </p>
     </div>
 
     <button mat-flat-button color="primary" class="!rounded-xl !py-5" routerLink="/orders/new">
       <mat-icon class="mr-1">add_task</mat-icon>
-      New Order
+      {{ 'orders.newOrder' | transloco }}
     </button>
   </div>
 
@@ -23,7 +23,7 @@
         <mat-icon class="!w-6 !h-6 !text-2xl">pending_actions</mat-icon>
       </div>
       <div>
-        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Active Jobs</p>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ 'orders.activeJobs' | transloco }}</p>
         <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">
           {{ store.openOrdersCount() }}
         </h3>
@@ -35,7 +35,7 @@
         <mat-icon class="!w-6 !h-6 !text-2xl">payments</mat-icon>
       </div>
       <div>
-        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Total Revenue</p>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ 'orders.totalRevenue' | transloco }}</p>
         <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">
           {{ store.totalRevenue() | uah }}
         </h3>
@@ -47,7 +47,7 @@
         <mat-icon class="!w-6 !h-6 !text-2xl">assignment</mat-icon>
       </div>
       <div>
-        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Total Orders</p>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ 'orders.totalOrders' | transloco }}</p>
         <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">
           {{ store.orders().length }}
         </h3>
@@ -58,7 +58,7 @@
   <!-- Filters Bar -->
   <div class="flex flex-wrap items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
     <mat-form-field appearance="outline" class="w-full sm:max-w-xs !mb-0" subscriptSizing="dynamic">
-      <mat-label>Filter by Status</mat-label>
+      <mat-label>{{ 'orders.filterByStatus' | transloco }}</mat-label>
       <mat-select [value]="store.filter()" (valueChange)="onFilterChange($event)">
         @for (opt of statusOptions; track opt.value) {
           <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
@@ -74,13 +74,13 @@
     </div>
   } @else if (store.error()) {
     <div class="bg-red-50 text-red-600 p-4 rounded-xl border border-red-150">
-      <strong>Error loading orders:</strong> {{ store.error() }}
+      <strong>{{ 'common.error' | transloco }}:</strong> {{ store.error() }}
     </div>
   } @else if (store.filteredOrders().length === 0) {
     <div class="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
       <mat-icon class="text-slate-400 !w-12 !h-12 !text-5xl mb-4">assignment_late</mat-icon>
-      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">No orders found</h3>
-      <p class="text-slate-500 text-sm mt-1">Try changing the status filter or create a new order.</p>
+      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">{{ 'orders.noOrdersFound' | transloco }}</h3>
+      <p class="text-slate-500 text-sm mt-1">{{ 'orders.noOrdersHint' | transloco }}</p>
     </div>
   } @else {
     <div class="space-y-4">
@@ -116,7 +116,7 @@
                 @if (order.scheduledDate) {
                   <div class="flex items-center gap-1">
                     <mat-icon class="!w-4 !h-4 !text-base">calendar_today</mat-icon>
-                    <span>Scheduled: {{ order.scheduledDate | date:'dd MMM yyyy, HH:mm' }}</span>
+                    <span>{{ 'orders.scheduledDate' | transloco }}: {{ order.scheduledDate | date:'dd MMM yyyy, HH:mm' }}</span>
                   </div>
                 }
               </div>
@@ -124,7 +124,7 @@
 
             <!-- Cost Info -->
             <div class="text-right flex md:flex-col items-center md:items-end justify-between md:justify-center border-t md:border-t-0 border-slate-100 dark:border-slate-800/50 pt-3 md:pt-0 gap-2 shrink-0">
-              <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Cost</span>
+              <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">{{ 'orders.totalCost' | transloco }}</span>
               <span class="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {{ order.totalCost | uah }}
               </span>

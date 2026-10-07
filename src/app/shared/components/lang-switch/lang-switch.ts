@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, ApplicationRef, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,26 +15,30 @@ import { LANG_KEY, LANGS } from '../../../core/config';
   styleUrl: './lang-switch.scss',
 })
 export class LangSwitch implements OnInit {
-  protected readonly translocoService = inject(TranslocoService);
-  currentLang: LANGS | string = localStorage?.['lang'] || LANGS.en;
-  public readonly Lang = LANGS;
+  private readonly translocoService = inject(TranslocoService);
+  private readonly appRef = inject(ApplicationRef);
+
+  currentLang: LANGS = this.#resolveStoredLang();
+  readonly Lang = LANGS;
 
   ngOnInit(): void {
-    this.initLang();
-  }
-
-  initLang(): void {
-    const stored = localStorage?.getItem(LANG_KEY);
-    this.currentLang = stored && Object.values(LANGS).includes(stored as LANGS)
-      ? (stored as LANGS)
-      : LANGS.en;
     this.translocoService.setActiveLang(this.currentLang);
-    localStorage?.setItem(LANG_KEY, this.currentLang);
+    document.documentElement.lang = this.currentLang;
   }
 
   setLang(lang: LANGS): void {
+    if (lang === this.currentLang) return;
     this.currentLang = lang;
     this.translocoService.setActiveLang(lang);
-    localStorage?.setItem(LANG_KEY, this.currentLang);
+    localStorage.setItem(LANG_KEY, lang);
+    document.documentElement.lang = lang;
+    this.appRef.tick();
+  }
+
+  #resolveStoredLang(): LANGS {
+    const stored = localStorage.getItem(LANG_KEY);
+    return stored && Object.values(LANGS).includes(stored as LANGS)
+      ? (stored as LANGS)
+      : LANGS.en;
   }
 }

@@ -28,10 +28,10 @@
 
       <!-- Desktop nav links — hidden on mobile, shown on md+ -->
       <nav class="toolbar__desktop-nav flex items-center gap-0.5 ml-3" aria-label="Основна навігація">
-        <a mat-button routerLink="/orders"    routerLinkActive="active-toolbar-link" class="!rounded-lg">Замовлення</a>
-        <a mat-button routerLink="/clients"   routerLinkActive="active-toolbar-link" class="!rounded-lg">Клієнти</a>
-        <a mat-button routerLink="/inventory" routerLinkActive="active-toolbar-link" class="!rounded-lg">Склад</a>
-        <a mat-button routerLink="/calendar"  routerLinkActive="active-toolbar-link" class="!rounded-lg">Календар</a>
+        <a mat-button routerLink="/orders"    routerLinkActive="active-toolbar-link" class="!rounded-lg">{{ 'navigation.orders' | transloco }}</a>
+        <a mat-button routerLink="/clients"   routerLinkActive="active-toolbar-link" class="!rounded-lg">{{ 'navigation.clients' | transloco }}</a>
+        <a mat-button routerLink="/inventory" routerLinkActive="active-toolbar-link" class="!rounded-lg">{{ 'navigation.inventory' | transloco }}</a>
+        <a mat-button routerLink="/calendar"  routerLinkActive="active-toolbar-link" class="!rounded-lg">{{ 'navigation.calendar' | transloco }}</a>
       </nav>
     </div>
 
@@ -44,7 +44,7 @@
       <button
         mat-icon-button
         (click)="openUpcomingDates()"
-        matTooltip="Найближчі дати замовлень"
+        [matTooltip]="'navigation.orders' | transloco"
         aria-label="Найближчі дати замовлень"
         class="text-slate-500 hover:text-amber-500"
         [matBadge]="upcomingCount > 0 ? upcomingCount : null"
@@ -66,7 +66,7 @@
         <button
           mat-icon-button
           (click)="signOut()"
-          matTooltip="Вийти"
+          [matTooltip]="'navigation.logout' | transloco"
           aria-label="Вийти з системи"
           class="text-slate-500 hover:text-red-500"
         >
@@ -113,7 +113,7 @@
           (click)="closeDrawer()"
         >
           <mat-icon>assignment</mat-icon>
-          <span>Замовлення</span>
+          <span>{{ 'navigation.orders' | transloco }}</span>
         </a>
         <a
           routerLink="/clients"
@@ -122,7 +122,7 @@
           (click)="closeDrawer()"
         >
           <mat-icon>people</mat-icon>
-          <span>Клієнти</span>
+          <span>{{ 'navigation.clients' | transloco }}</span>
         </a>
         <a
           routerLink="/inventory"
@@ -131,7 +131,7 @@
           (click)="closeDrawer()"
         >
           <mat-icon>inventory_2</mat-icon>
-          <span>Склад</span>
+          <span>{{ 'navigation.inventory' | transloco }}</span>
         </a>
         <a
           routerLink="/calendar"
@@ -140,7 +140,7 @@
           (click)="closeDrawer()"
         >
           <mat-icon>calendar_month</mat-icon>
-          <span>Календар</span>
+          <span>{{ 'navigation.calendar' | transloco }}</span>
         </a>
       </div>
 
@@ -153,7 +153,7 @@
             (click)="openUpcomingDates(); closeDrawer()"
           >
             <mat-icon class="text-amber-500">alarm</mat-icon>
-            <span>Найближчі дати</span>
+            <span>{{ 'navigation.orders' | transloco }}</span>
             <span class="ml-auto bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
               {{ upcomingCount }}
             </span>
@@ -170,7 +170,7 @@
             <button
               mat-icon-button
               (click)="signOut()"
-              aria-label="Вийти"
+              [attr.aria-label]="'navigation.logout' | transloco"
               class="text-slate-500 hover:text-red-500"
             >
               <mat-icon>logout</mat-icon>
@@ -185,21 +185,21 @@
        BOTTOM NAV — mobile only (<md), fixed to bottom
   ════════════════════════════════════════════════════════ -->
   <nav class="bottom-nav" aria-label="Нижня навігація">
-    <a routerLink="/orders"    routerLinkActive="active-nav-link" aria-label="Замовлення">
+    <a routerLink="/orders"    routerLinkActive="active-nav-link" [attr.aria-label]="'navigation.orders' | transloco">
       <mat-icon>assignment</mat-icon>
-      <span>Замовлення</span>
+      <span>{{ 'navigation.orders' | transloco }}</span>
     </a>
-    <a routerLink="/clients"   routerLinkActive="active-nav-link" aria-label="Клієнти">
+    <a routerLink="/clients"   routerLinkActive="active-nav-link" [attr.aria-label]="'navigation.clients' | transloco">
       <mat-icon>people</mat-icon>
-      <span>Клієнти</span>
+      <span>{{ 'navigation.clients' | transloco }}</span>
     </a>
-    <a routerLink="/inventory" routerLinkActive="active-nav-link" aria-label="Склад">
+    <a routerLink="/inventory" routerLinkActive="active-nav-link" [attr.aria-label]="'navigation.inventory' | transloco">
       <mat-icon>inventory_2</mat-icon>
-      <span>Склад</span>
+      <span>{{ 'navigation.inventory' | transloco }}</span>
     </a>
-    <a routerLink="/calendar"  routerLinkActive="active-nav-link" aria-label="Календар">
+    <a routerLink="/calendar"  routerLinkActive="active-nav-link" [attr.aria-label]="'navigation.calendar' | transloco">
       <mat-icon>calendar_month</mat-icon>
-      <span>Календар</span>
+      <span>{{ 'navigation.calendar' | transloco }}</span>
     </a>
   </nav>
 

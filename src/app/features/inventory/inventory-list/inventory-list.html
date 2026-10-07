@@ -3,16 +3,16 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
       <h1 class="text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
-        Warehouse & Parts Inventory
+        {{ 'inventory.title' | transloco }}
       </h1>
       <p class="text-sm text-slate-500 mt-1">
-        Track stock counts, monitor thresholds, locate items, and manage supplier info.
+        {{ 'inventory.subtitle' | transloco }}
       </p>
     </div>
 
     <button mat-flat-button color="primary" class="!rounded-xl !py-5" (click)="openAddItemDialog()">
       <mat-icon class="mr-1">add_box</mat-icon>
-      Add Part / Item
+      {{ 'inventory.addItem' | transloco }}
     </button>
   </div>
 
@@ -23,7 +23,7 @@
         <mat-icon class="!w-6 !h-6 !text-2xl">inventory_2</mat-icon>
       </div>
       <div>
-        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Total Items</p>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ 'inventory.totalItems' | transloco }}</p>
         <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">
           {{ store.items().length }}
         </h3>
@@ -35,7 +35,7 @@
         <mat-icon class="!w-6 !h-6 !text-2xl">gpp_maybe</mat-icon>
       </div>
       <div>
-        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Low Stock Alerts</p>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ 'inventory.lowStockAlerts' | transloco }}</p>
         <h3 class="text-2xl font-black text-red-600 dark:text-red-450">
           {{ store.lowStockItems().length }}
         </h3>
@@ -47,7 +47,7 @@
         <mat-icon class="!w-6 !h-6 !text-2xl">account_balance_wallet</mat-icon>
       </div>
       <div>
-        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider font-semibold">Total Stock Value</p>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider font-semibold">{{ 'inventory.totalStockValue' | transloco }}</p>
         <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">
           {{ store.totalStockValue() | uah }}
         </h3>
@@ -60,8 +60,8 @@
     <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
       <mat-form-field appearance="outline" class="w-full sm:max-w-md !mb-0" subscriptSizing="dynamic">
         <mat-icon matPrefix class="text-slate-400">search</mat-icon>
-        <mat-label>Search inventory...</mat-label>
-        <input matInput [value]="store.searchQuery()" (input)="onSearchChange($event)" placeholder="Search by name, SKU or brand...">
+        <mat-label>{{ 'common.search' | transloco }}</mat-label>
+        <input matInput [value]="store.searchQuery()" (input)="onSearchChange($event)" [placeholder]="'inventory.searchPlaceholder' | transloco">
       </mat-form-field>
     </div>
 
@@ -70,9 +70,9 @@
       <div class="bg-red-50 text-red-700 p-4 rounded-2xl border border-red-150 flex items-start gap-3">
         <mat-icon class="text-red-600 mt-0.5">warning</mat-icon>
         <div>
-          <h4 class="font-bold text-sm">Low Stock Alert</h4>
+          <h4 class="font-bold text-sm">{{ 'inventory.lowStockBannerTitle' | transloco }}</h4>
           <p class="text-xs mt-0.5">
-            {{ store.lowStockItems().length }} items are at or below minimum threshold. Please order restock from suppliers soon.
+            {{ store.lowStockItems().length }} {{ 'inventory.lowStockBannerText' | transloco }}
           </p>
         </div>
       </div>
@@ -86,13 +86,13 @@
     </div>
   } @else if (store.error()) {
     <div class="bg-red-50 text-red-600 p-4 rounded-xl border border-red-150">
-      <strong>Error loading items:</strong> {{ store.error() }}
+      <strong>{{ 'common.error' | transloco }}:</strong> {{ store.error() }}
     </div>
   } @else if (store.filteredItems().length === 0) {
     <div class="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
       <mat-icon class="text-slate-400 !w-12 !h-12 !text-5xl mb-4">inventory</mat-icon>
-      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">No items found</h3>
-      <p class="text-slate-500 text-sm mt-1">Try modifying your query or create a new part record.</p>
+      <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300">{{ 'inventory.noItemsFound' | transloco }}</h3>
+      <p class="text-slate-500 text-sm mt-1">{{ 'inventory.noItemsHint' | transloco }}</p>
     </div>
   } @else {
     <mat-card class="border border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-0">
@@ -100,12 +100,12 @@
         <table class="w-full text-sm text-left text-slate-650 dark:text-slate-300 mobile-table-card">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/80 text-xs uppercase text-slate-400 font-bold">
             <tr>
-              <th class="p-4 pl-6">Part Info</th>
-              <th class="p-4">Category</th>
-              <th class="p-4 text-right">Price</th>
-              <th class="p-4 text-center">Stock Level</th>
-              <th class="p-4 text-center">Location</th>
-              <th class="p-4 text-right pr-6">Actions</th>
+              <th class="p-4 pl-6">{{ 'inventory.partInfo' | transloco }}</th>
+              <th class="p-4">{{ 'inventory.category' | transloco }}</th>
+              <th class="p-4 text-right">{{ 'inventory.price' | transloco }}</th>
+              <th class="p-4 text-center">{{ 'inventory.stockLevel' | transloco }}</th>
+              <th class="p-4 text-center">{{ 'inventory.location' | transloco }}</th>
+              <th class="p-4 text-right pr-6">{{ 'inventory.actions' | transloco }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -132,7 +132,7 @@
                     [class.text-emerald-600]="item.quantity > item.minThreshold"
                     [class.bg-red-500/10]="item.quantity <= item.minThreshold"
                     [class.text-red-650]="item.quantity <= item.minThreshold">
-                    {{ item.quantity }} in stock (Min: {{ item.minThreshold }})
+                    {{ item.quantity }} {{ 'inventory.inStock' | transloco }} ({{ 'inventory.min' | transloco }}: {{ item.minThreshold }})
                   </span>
                 </td>
                 <td class="p-4 text-center font-mono text-xs text-slate-500" data-label="Location">
@@ -146,7 +146,7 @@
                     <button mat-button class="!min-w-0 !p-1.5 !h-8 !w-8 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500 mr-2" title="Restock 1" (click)="adjustQty(item.id, 1)">
                       +1
                     </button>
-                    <button mat-icon-button color="warn" title="Delete Part" (click)="deleteItem(item.id)">
+                    <button mat-icon-button color="warn" [title]="'common.delete' | transloco" (click)="deleteItem(item.id)">
                       <mat-icon>delete_outline</mat-icon>
                     </button>
                   </div>
