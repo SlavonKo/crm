@@ -62,6 +62,10 @@ export class Toolbar {
     this.modalsService.openUpcomingDates();
   }
 
+  openTelegramQr(): void {
+    this.modalsService.openTelegramQr();
+  }
+
   signOut(): void {
     this.closeDrawer();
     this.auth.signOut();

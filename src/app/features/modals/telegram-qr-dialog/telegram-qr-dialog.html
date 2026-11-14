@@ -1,0 +1,48 @@
+<div class="telegram-qr-dialog">
+  <div class="dialog-header">
+    <h2 mat-dialog-title class="flex items-center gap-2">
+      <mat-icon class="text-blue-500">qr_code_2</mat-icon>
+      <span>Telegram QR Code</span>
+    </h2>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="qr-container">
+      <div class="qr-placeholder">
+        <img *ngIf="qrImageUrl && !isLoading" [src]="qrImageUrl" alt="Telegram Bot QR Code" class="qr-image" />
+        <div *ngIf="isLoading" class="flex justify-center items-center gap-2">
+          <mat-icon class="animate-spin">refresh</mat-icon>
+          <span>{{ isRetrying ? 'Retrying...' : 'Loading QR Code...' }}</span>
+        </div>
+        <div *ngIf="error && !isLoading" class="error-container">
+          <mat-icon class="qr-icon text-red-500">error</mat-icon>
+          <p class="text-center text-red-600 dark:text-red-400 text-sm mt-2">{{ error }}</p>
+          <button mat-stroked-button color="accent" (click)="retryLoadingQr()" class="mt-3 w-full">
+            <mat-icon>refresh</mat-icon>
+            <span>Try Again</span>
+          </button>
+        </div>
+        <div *ngIf="!qrImageUrl && !isLoading && !error" class="text-center text-slate-500">
+          <mat-icon class="qr-icon">qr_code</mat-icon>
+          <p>QR Code not available</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <p class="text-sm text-slate-600 dark:text-slate-400 text-center">
+        Scan with your phone camera to open Telegram bot
+      </p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="downloadQr()" [disabled]="!qrImageUrl || isLoading">
+      <mat-icon>download</mat-icon>
+      <span>Download</span>
+    </button>
+    <button mat-raised-button color="primary" (click)="close()">
+      <span>Close</span>
+    </button>
+  </mat-dialog-actions>
+</div>

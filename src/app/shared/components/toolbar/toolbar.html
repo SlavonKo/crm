@@ -4,7 +4,16 @@
        TOP TOOLBAR — visible on all screen sizes
   ════════════════════════════════════════════════════════ -->
   <mat-toolbar class="toolbar">
-
+    <!-- Desktop menu (hidden on mobile) -->
+    <button matIconButton [matMenuTriggerFor]="desktopMenu" aria-label="Додаткові опції" class="toolbar__desktop-menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #desktopMenu="matMenu">
+      <button mat-menu-item (click)="openTelegramQr()">
+        <mat-icon>dialpad</mat-icon>
+        <span>Telegram QR</span>
+      </button>
+    </mat-menu>
     <!-- Left: hamburger (mobile only) + logo + desktop nav links -->
     <div class="flex items-center gap-1 min-w-0">
 
@@ -142,6 +151,15 @@
           <mat-icon>calendar_month</mat-icon>
           <span>{{ 'navigation.calendar' | transloco }}</span>
         </a>
+
+        <!-- Telegram QR - direct link in mobile -->
+        <button
+          class="drawer-link"
+          (click)="openTelegramQr(); closeDrawer()"
+        >
+          <mat-icon>dialpad</mat-icon>
+          <span>Telegram QR</span>
+        </button>
       </div>
 
       <!-- Drawer footer: user info + actions -->

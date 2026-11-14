@@ -1,0 +1,77 @@
+.telegram-qr-dialog {
+  .dialog-header {
+    padding: 0;
+  }
+
+  .dialog-content {
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+  }
+
+  .qr-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 3rem 2rem;
+    border: 2px dashed #e2e8f0;
+    border-radius: 0.5rem;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+
+    :dark & {
+      border-color: #475569;
+      background-color: #1e293b;
+    }
+
+    &:hover {
+      border-color: #cbd5e1;
+      background-color: #f0f4f8;
+
+      :dark & {
+        border-color: #64748b;
+        background-color: #293548;
+      }
+    }
+
+    .qr-icon {
+      font-size: 4rem;
+      width: 4rem;
+      height: 4rem;
+      color: #3b82f6;
+      opacity: 0.5;
+    }
+
+    p {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.875rem;
+
+      :dark & {
+        color: #94a3b8;
+      }
+    }
+  }
+
+  .instructions {
+    text-align: center;
+  }
+
+  mat-dialog-actions {
+    gap: 0.5rem;
+
+    button {
+      gap: 0.5rem;
+    }
+  }
+}

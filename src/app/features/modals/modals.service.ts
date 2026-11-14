@@ -10,6 +10,7 @@ import { EditMotorcycleDialogComponent } from './edit-motorcycle-dialog/edit-mot
 import { EditClientDialogComponent } from './edit-client-dialog/edit-client-dialog';
 import { AddInventoryItemDialogComponent } from './add-inventory-item-dialog/add-inventory-item-dialog';
 import { AddEventDialogComponent } from './add-event-dialog/add-event-dialog';
+import { TelegramQrDialogComponent } from './telegram-qr-dialog/telegram-qr-dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -137,6 +138,18 @@ export class ModalsService {
       dialogRef.afterClosed().subscribe((result) => {
         resolve(result);
       });
+    });
+  }
+
+  /**
+   * Opens the Telegram QR code dialog
+   */
+  openTelegramQr(): void {
+    this.#dialog.open(TelegramQrDialogComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      disableClose: false,
     });
   }
 }

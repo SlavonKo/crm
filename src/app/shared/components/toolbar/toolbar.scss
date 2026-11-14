@@ -68,6 +68,16 @@ mat-toolbar.toolbar {
   }
 }
 
+// ── Desktop menu button — hidden on mobile, shown on md+ ─────────────────────
+
+.toolbar__desktop-menu {
+  display: none;
+
+  @media (min-width: 768px) {
+    display: flex !important;
+  }
+}
+
 // ── Mobile drawer nav links ───────────────────────────────────────────────────
 
 .drawer-link {

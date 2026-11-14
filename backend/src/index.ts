@@ -19,6 +19,7 @@ import axios, { AxiosError } from 'axios';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { initTelegramBot, stopTelegramBot, getTelegramBot } from './telegram-bot.js';
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 
@@ -30,10 +31,15 @@ const GROQ_KEY    = process.env['GROQ_API_KEY'] ?? '';
 const GROQ_MODEL  = process.env['GROQ_MODEL']   ?? 'openai/gpt-oss-120b';
 const GROQ_URL    = 'https://api.groq.com/openai/v1/chat/completions';
 const ALLOWED_ORIGINS = (process.env['ALLOWED_ORIGINS'] ?? 'http://localhost:4200').split(',');
+const TELEGRAM_TOKEN = process.env['TELEGRAM_BOT_TOKEN'] ?? '';
 
 if (!GROQ_KEY) {
   console.error('[ai-proxy] ✗ GROQ_API_KEY is not set. Add it to .env.local');
   process.exit(1);
+}
+
+if (!TELEGRAM_TOKEN) {
+  console.warn('[telegram-bot] ⚠ TELEGRAM_BOT_TOKEN is not set. Telegram bot will not be initialized.');
 }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
@@ -168,6 +174,36 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', service: 'ai-proxy' });
 });
 
+// Telegram QR code endpoint with caching
+app.get('/api/telegram/qr', (_req: Request, res: Response) => {
+  try {
+    // Resolve path relative to backend/src/
+    // __dirname in dev is backend/src/, in prod is backend/dist/
+    // So we want: backend/logs/telegram-bot-qr.png
+    const qrPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../logs/telegram-bot-qr.png');
+    
+    // Set cache headers: cache for 1 hour
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.set('ETag', 'strong');
+    
+    res.sendFile(qrPath);
+  } catch (err) {
+    console.error('[telegram-qr] Error serving QR code:', err);
+    res.status(404).json({ error: 'QR code not found. Make sure Telegram bot is initialized.' });
+  }
+});
+
+// Telegram bot status endpoint
+app.get('/api/telegram/status', (_req: Request, res: Response) => {
+  const botInstance = getTelegramBot();
+  
+  res.json({
+    initialized: botInstance !== null,
+    hasToken: !!TELEGRAM_TOKEN,
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // ─── 404 / error handlers ─────────────────────────────────────────────────────
 
 app.use((_req: Request, res: Response) => {
@@ -185,4 +221,40 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 app.listen(PORT, () => {
   console.log(`[ai-proxy] ✓ Listening on http://localhost:${PORT}`);
   console.log(`[ai-proxy]   GROQ_MODEL=${GROQ_MODEL}`);
+});
+
+// Initialize Telegram bot if token is provided
+if (TELEGRAM_TOKEN) {
+  initTelegramBot(TELEGRAM_TOKEN)
+    .then((botInstance) => {
+      if (!botInstance) {
+        console.warn('[telegram-bot] ⚠ Failed to initialize Telegram bot (token may be invalid)');
+        console.warn('[telegram-bot] QR code endpoint will return 404 until bot is restarted with valid token');
+      }
+    })
+    .catch((err) => {
+      console.error('[telegram-bot] Failed to initialize:', err.message);
+      process.exit(1);
+    });
+}
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\n[server] Shutting down gracefully...');
+  await stopTelegramBot();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  console.log('\n[server] Received SIGTERM, shutting down gracefully...');
+  await stopTelegramBot();
+  process.exit(0);
+});
+
+// Handle uncaught errors
+process.on('uncaughtException', (err) => {
+  console.error('[server] Uncaught exception:', err.message);
+  stopTelegramBot().finally(() => {
+    process.exit(1);
+  });
 });
