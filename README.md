@@ -9,7 +9,7 @@
 | Фреймворк | Angular 22 (standalone components) |
 | State | Angular Signals (`signal`, `computed`) |
 | UI | Angular Material + Tailwind CSS |
-| AI | Groq API (`llama-3.3-70b-versatile`) |
+| AI | Groq API (`lopenai/gpt-oss-120b`) |
 | Валідація | Zod |
 | i18n | Transloco (uk / en) |
 | Mock-сервер | json-server (`localhost:3000`) |
@@ -64,7 +64,7 @@ NG_APP_FIREBASE_APP_ID=
 
 # Groq AI
 NG_APP_GROQ_API_KEY=
-NG_APP_GROQ_MODEL=llama-3.3-70b-versatile
+NG_APP_GROQ_MODEL=openai/gpt-oss-120b
 
 # App
 NG_APP_ENV=development

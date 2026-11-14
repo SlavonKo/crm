@@ -1,0 +1,58 @@
+<h2 mat-dialog-title class="!text-xl !font-bold">Schedule Appointment</h2>
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="flex flex-col gap-4 !pt-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Event Title</mat-label>
+      <input matInput formControlName="title" placeholder="Suzuki GSX-R1000 Valve Clearance" required>
+      <mat-error *ngIf="eventForm.get('title')?.hasError('required')">Required</mat-error>
+    </mat-form-field>
+
+    <div class="flex gap-4">
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Start Time</mat-label>
+        <input matInput type="datetime-local" formControlName="startStr" required>
+        <mat-error *ngIf="eventForm.get('startStr')?.hasError('required')">Required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>End Time</mat-label>
+        <input matInput type="datetime-local" formControlName="endStr" required>
+        <mat-error *ngIf="eventForm.get('endStr')?.hasError('required')">Required</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex gap-4">
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Select Work Order (Optional)</mat-label>
+        <mat-select formControlName="orderId">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option *ngFor="let o of ordersStore.orders()" [value]="o.id">
+            {{ o.title }} (Total: {{ o.totalCost | uah }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Event Color Code</mat-label>
+        <mat-select formControlName="color">
+          <mat-option value="#4f46e5">Indigo (Regular)</mat-option>
+          <mat-option value="#0ea5e9">Sky Blue (Diagnostic)</mat-option>
+          <mat-option value="#f59e0b">Amber (Waiting Parts)</mat-option>
+          <mat-option value="#10b981">Emerald (Completion)</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Notes (Optional)</mat-label>
+      <textarea matInput formControlName="notes" placeholder="Notes for tech or setup requirements..." rows="3"></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end" class="!pb-4 !px-6 gap-2">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="eventForm.invalid">
+      Schedule
+    </button>
+  </mat-dialog-actions>
+</form>

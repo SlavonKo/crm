@@ -6,17 +6,13 @@ import { MotoCardComponent } from '../../../shared/components/moto-card/moto-car
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Motorcycle, MotorcycleStatus } from '../../../data/models/motorcycle.model';
-import { MotorcycleType, MOTORCYCLE_TYPE_LABELS } from '../../../data/enums/motorcycle-type.enum';
 import { TranslocoModule } from '@jsverse/transloco';
+import { Motorcycle, MotorcycleStatus } from '../../../data/models/motorcycle.model';
+import { ModalsService } from '../../modals/modals.service';
 
 @Component({
   selector: 'app-client-detail',
@@ -39,8 +35,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 export class ClientDetail implements OnInit {
   readonly store       = inject(ClientsStore);
   readonly ordersStore = inject(OrdersStore);
-  readonly #dialog      = inject(MatDialog);
   readonly #router      = inject(Router);
+  readonly #modalsService = inject(ModalsService);
 
   readonly id = input.required<string>();
 
@@ -67,52 +63,32 @@ export class ClientDetail implements OnInit {
 
   // ─── Edit client ─────────────────────────────────────────────────────────
 
-  onEditClient(): void {
+  async onEditClient(): Promise<void> {
     const client = this.store.selectedClient();
     if (!client) return;
 
-    const ref = this.#dialog.open(EditClientDialogComponent, {
-      width: '520px',
-      autoFocus: 'first-tab',
-      data: client,
-    });
-
-    ref.afterClosed().subscribe(async (patch: Partial<import('../../../data/models/client.model').Client> | undefined) => {
-      if (patch) {
-        await this.store.update(client.id, patch);
-      }
-    });
+    const patch = await this.#modalsService.openEditClient(client);
+    if (patch) {
+      await this.store.update(client.id, patch);
+    }
   }
 
   // ─── Add motorcycle ───────────────────────────────────────────────────────
 
-  openAddMotoDialog(): void {
-    const ref = this.#dialog.open(AddMotorcycleDialogComponent, {
-      width: '520px',
-      autoFocus: 'first-tab',
-    });
-
-    ref.afterClosed().subscribe(async (result) => {
-      if (result) {
-        await this.store.addMotorcycle({ ...result, clientId: this.id() });
-      }
-    });
+  async openAddMotoDialog(): Promise<void> {
+    const result = await this.#modalsService.openAddMotorcycle();
+    if (result) {
+      await this.store.addMotorcycle({ ...result, clientId: this.id() });
+    }
   }
 
   // ─── Edit motorcycle ──────────────────────────────────────────────────────
 
-  onEditInfo(moto: Motorcycle): void {
-    const ref = this.#dialog.open(EditMotorcycleDialogComponent, {
-      width: '520px',
-      autoFocus: 'first-tab',
-      data: moto,
-    });
-
-    ref.afterClosed().subscribe(async (patch: Partial<Motorcycle> | undefined) => {
-      if (patch) {
-        await this.store.updateMotorcycle(moto.id, patch);
-      }
-    });
+  async onEditInfo(moto: Motorcycle): Promise<void> {
+    const patch = await this.#modalsService.openEditMotorcycle(moto);
+    if (patch) {
+      await this.store.updateMotorcycle(moto.id, patch);
+    }
   }
 
   // ─── Other actions ────────────────────────────────────────────────────────
@@ -127,325 +103,5 @@ export class ClientDetail implements OnInit {
     this.#router.navigate(['/orders/new'], {
       queryParams: { clientId: this.id(), motorcycleId: moto.id },
     });
-  }
-}
-
-// ─── Shared type options ─────────────────────────────────────────────────────
-
-const TYPE_OPTIONS = Object.entries(MOTORCYCLE_TYPE_LABELS).map(([k, v]) => ({
-  value: k as MotorcycleType,
-  label: v,
-}));
-
-// ─── Add Motorcycle Dialog ────────────────────────────────────────────────────
-
-@Component({
-  selector: 'app-add-motorcycle-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    TranslocoModule,
-  ],
-  template: `
-    <h2 mat-dialog-title class="!text-xl !font-bold">{{ 'clients.addMotoDialog.title' | transloco }}</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-dialog-content class="flex flex-col gap-4 !pt-2 !overflow-visible">
-
-        <mat-form-field appearance="outline">
-          <mat-label>VIN</mat-label>
-          <input matInput formControlName="vin" placeholder="17 символів" required>
-          <mat-error *ngIf="form.get('vin')?.hasError('required')">{{ 'common.required' | transloco }}</mat-error>
-          <mat-error *ngIf="form.get('vin')?.hasError('minlength') || form.get('vin')?.hasError('maxlength')">
-            Рівно 17 символів
-          </mat-error>
-        </mat-form-field>
-
-        <div class="flex gap-4">
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.make' | transloco }}</mat-label>
-            <input matInput formControlName="make" placeholder="Yamaha" required>
-            <mat-error *ngIf="form.get('make')?.hasError('required')">{{ 'common.required' | transloco }}</mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.model' | transloco }}</mat-label>
-            <input matInput formControlName="model" placeholder="MT-09" required>
-            <mat-error *ngIf="form.get('model')?.hasError('required')">{{ 'common.required' | transloco }}</mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="flex gap-4">
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.year' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="year" placeholder="2023" required>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.mileage' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="currentMileage" placeholder="12500" required>
-            <mat-hint>км</mat-hint>
-          </mat-form-field>
-        </div>
-
-        <div class="flex gap-4">
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.type' | transloco }}</mat-label>
-            <mat-select formControlName="type" required>
-              <mat-option *ngFor="let t of typeOptions" [value]="t.value">{{ t.label }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.plate' | transloco }}</mat-label>
-            <input matInput formControlName="licensePlate" placeholder="АА1234ВВ">
-          </mat-form-field>
-        </div>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'clients.addMotoDialog.color' | transloco }}</mat-label>
-          <input matInput formControlName="color" placeholder="Чорний / Синій">
-        </mat-form-field>
-
-      </mat-dialog-content>
-      <mat-dialog-actions align="end" class="!pb-4 !px-6 gap-2">
-        <button mat-button type="button" (click)="dialogRef.close()">{{ 'common.cancel' | transloco }}</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-          {{ 'clients.addMotoDialog.submit' | transloco }}
-        </button>
-      </mat-dialog-actions>
-    </form>
-  `,
-})
-export class AddMotorcycleDialogComponent {
-  readonly dialogRef = inject(MatDialogRef<AddMotorcycleDialogComponent>);
-  readonly #fb = inject(FormBuilder);
-  readonly typeOptions = TYPE_OPTIONS;
-
-  readonly form: FormGroup = this.#fb.group({
-    vin:            ['', [Validators.required, Validators.minLength(17), Validators.maxLength(17)]],
-    make:           ['', Validators.required],
-    model:          ['', Validators.required],
-    year:           [new Date().getFullYear(), [Validators.required, Validators.min(1900)]],
-    currentMileage: [0, [Validators.required, Validators.min(0)]],
-    type:           [MotorcycleType.OTHER, Validators.required],
-    licensePlate:   [''],
-    color:          [''],
-  });
-
-  onSubmit(): void {
-    if (this.form.valid) this.dialogRef.close(this.form.value);
-  }
-}
-
-// ─── Edit Motorcycle Dialog ───────────────────────────────────────────────────
-
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-@Component({
-  selector: 'app-edit-motorcycle-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    TranslocoModule,
-  ],
-  template: `
-    <h2 mat-dialog-title class="!text-xl !font-bold">
-      {{ 'clients.editMotoDialog.title' | transloco }}
-      <span class="text-slate-400 font-normal text-base ml-2">{{ data.make }} {{ data.model }}</span>
-    </h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-dialog-content class="flex flex-col gap-4 !pt-2 !overflow-visible">
-
-        <div class="flex gap-4">
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.make' | transloco }}</mat-label>
-            <input matInput formControlName="make" required>
-            <mat-error *ngIf="form.get('make')?.hasError('required')">{{ 'common.required' | transloco }}</mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.model' | transloco }}</mat-label>
-            <input matInput formControlName="model" required>
-            <mat-error *ngIf="form.get('model')?.hasError('required')">{{ 'common.required' | transloco }}</mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="flex gap-4">
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.year' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="year" required>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.mileage' | transloco }}</mat-label>
-            <input matInput type="number" formControlName="currentMileage" required>
-            <mat-hint>км</mat-hint>
-          </mat-form-field>
-        </div>
-
-        <div class="flex gap-4">
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.type' | transloco }}</mat-label>
-            <mat-select formControlName="type" required>
-              <mat-option *ngFor="let t of typeOptions" [value]="t.value">{{ t.label }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'clients.addMotoDialog.plate' | transloco }}</mat-label>
-            <input matInput formControlName="licensePlate">
-          </mat-form-field>
-        </div>
-
-        <mat-form-field appearance="outline">
-          <mat-label>VIN</mat-label>
-          <input matInput formControlName="vin" required>
-          <mat-error *ngIf="form.get('vin')?.hasError('required')">{{ 'common.required' | transloco }}</mat-error>
-          <mat-error *ngIf="form.get('vin')?.hasError('minlength') || form.get('vin')?.hasError('maxlength')">
-            Рівно 17 символів
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'clients.addMotoDialog.color' | transloco }}</mat-label>
-          <input matInput formControlName="color">
-        </mat-form-field>
-
-      </mat-dialog-content>
-      <mat-dialog-actions align="end" class="!pb-4 !px-6 gap-2">
-        <button mat-button type="button" (click)="dialogRef.close()">{{ 'common.cancel' | transloco }}</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-          {{ 'clients.editMotoDialog.submit' | transloco }}
-        </button>
-      </mat-dialog-actions>
-    </form>
-  `,
-})
-export class EditMotorcycleDialogComponent {
-  readonly dialogRef = inject(MatDialogRef<EditMotorcycleDialogComponent>);
-  readonly data      = inject<Motorcycle>(MAT_DIALOG_DATA);
-  readonly #fb       = inject(FormBuilder);
-  readonly typeOptions = TYPE_OPTIONS;
-
-  readonly form: FormGroup = this.#fb.group({
-    vin:            [this.data.vin,            [Validators.required, Validators.minLength(17), Validators.maxLength(17)]],
-    make:           [this.data.make,           Validators.required],
-    model:          [this.data.model,          Validators.required],
-    year:           [this.data.year,           [Validators.required, Validators.min(1900)]],
-    currentMileage: [this.data.currentMileage, [Validators.required, Validators.min(0)]],
-    type:           [this.data.type,           Validators.required],
-    licensePlate:   [this.data.licensePlate ?? ''],
-    color:          [this.data.color ?? ''],
-  });
-
-  onSubmit(): void {
-    if (this.form.valid) this.dialogRef.close(this.form.value);
-  }
-}
-
-// ─── Edit Client Dialog ───────────────────────────────────────────────────────
-
-import { Client } from '../../../data/models/client.model';
-
-@Component({
-  selector: 'app-edit-client-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    TranslocoModule,
-  ],
-  template: `
-    <h2 mat-dialog-title class="!text-xl !font-bold">
-      {{ 'clients.editDialog.title' | transloco }}
-    </h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-dialog-content class="!max-h-[70vh]">
-        <div class="flex flex-col gap-3 py-2">
-
-          <div class="flex gap-3">
-            <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-              <mat-label>{{ 'clients.dialog.firstName' | transloco }}</mat-label>
-              <input matInput formControlName="firstName" required>
-              <mat-error *ngIf="form.get('firstName')?.hasError('required')">
-                {{ 'common.required' | transloco }}
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
-              <mat-label>{{ 'clients.dialog.lastName' | transloco }}</mat-label>
-              <input matInput formControlName="lastName" required>
-              <mat-error *ngIf="form.get('lastName')?.hasError('required')">
-                {{ 'common.required' | transloco }}
-              </mat-error>
-            </mat-form-field>
-          </div>
-
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>{{ 'clients.dialog.phone' | transloco }}</mat-label>
-            <input matInput formControlName="phone" required>
-            <mat-error *ngIf="form.get('phone')?.hasError('required')">
-              {{ 'common.required' | transloco }}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>{{ 'clients.dialog.email' | transloco }}</mat-label>
-            <input matInput type="email" formControlName="email">
-            <mat-error *ngIf="form.get('email')?.hasError('email')">
-              {{ 'common.invalidEmail' | transloco }}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>{{ 'clients.dialog.address' | transloco }}</mat-label>
-            <input matInput formControlName="address">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>{{ 'clients.dialog.notes' | transloco }}</mat-label>
-            <textarea matInput formControlName="notes" rows="3"></textarea>
-          </mat-form-field>
-
-        </div>
-      </mat-dialog-content>
-
-      <mat-dialog-actions align="end" class="!px-6 !pb-4 gap-2">
-        <button mat-button type="button" (click)="dialogRef.close()">
-          {{ 'common.cancel' | transloco }}
-        </button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-          {{ 'clients.editDialog.submit' | transloco }}
-        </button>
-      </mat-dialog-actions>
-    </form>
-  `,
-})
-export class EditClientDialogComponent {
-  readonly dialogRef = inject(MatDialogRef<EditClientDialogComponent>);
-  readonly data      = inject<Client>(MAT_DIALOG_DATA);
-  readonly #fb       = inject(FormBuilder);
-
-  readonly form: FormGroup = this.#fb.group({
-    firstName: [this.data.firstName, Validators.required],
-    lastName:  [this.data.lastName,  Validators.required],
-    phone:     [this.data.phone,     Validators.required],
-    email:     [this.data.email  ?? '', Validators.email],
-    address:   [this.data.address ?? ''],
-    notes:     [this.data.notes   ?? ''],
-  });
-
-  onSubmit(): void {
-    if (this.form.valid) this.dialogRef.close(this.form.value);
   }
 }

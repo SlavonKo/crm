@@ -27,7 +27,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env.local') });
 
 const PORT        = Number(process.env['SERVER_PORT'] ?? 4000);
 const GROQ_KEY    = process.env['GROQ_API_KEY'] ?? '';
-const GROQ_MODEL  = process.env['GROQ_MODEL']   ?? 'llama-3.3-70b-versatile';
+const GROQ_MODEL  = process.env['GROQ_MODEL']   ?? 'openai/gpt-oss-120b';
 const GROQ_URL    = 'https://api.groq.com/openai/v1/chat/completions';
 const ALLOWED_ORIGINS = (process.env['ALLOWED_ORIGINS'] ?? 'http://localhost:4200').split(',');
 

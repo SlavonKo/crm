@@ -1,0 +1,64 @@
+<h2 mat-dialog-title class="!text-xl !font-bold">{{ 'clients.dialog.title' | transloco }}</h2>
+<form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+
+  <mat-dialog-content class="!max-h-[70vh]">
+    <div class="flex flex-col gap-3 py-2">
+
+      <div class="flex gap-3">
+        <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+          <mat-label>{{ 'clients.dialog.firstName' | transloco }}</mat-label>
+          <input matInput formControlName="firstName" placeholder="Іван" required>
+          <mat-error *ngIf="clientForm.get('firstName')?.hasError('required')">
+            {{ 'common.required' | transloco }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+          <mat-label>{{ 'clients.dialog.lastName' | transloco }}</mat-label>
+          <input matInput formControlName="lastName" placeholder="Іваненко" required>
+          <mat-error *ngIf="clientForm.get('lastName')?.hasError('required')">
+            {{ 'common.required' | transloco }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'clients.dialog.phone' | transloco }}</mat-label>
+        <input matInput formControlName="phone" placeholder="+380 50 123 4567" required>
+        <mat-error *ngIf="clientForm.get('phone')?.hasError('required')">
+          {{ 'common.required' | transloco }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'clients.dialog.email' | transloco }}</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="ivan@example.com">
+        <mat-error *ngIf="clientForm.get('email')?.hasError('email')">
+          {{ 'common.invalidEmail' | transloco }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'clients.dialog.address' | transloco }}</mat-label>
+        <input matInput formControlName="address" placeholder="м. Київ, вул. Хрещатик, 1">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'clients.dialog.notes' | transloco }}</mat-label>
+        <textarea matInput formControlName="notes" rows="3"
+          placeholder="{{ 'clients.dialog.notesPlaceholder' | transloco }}"></textarea>
+      </mat-form-field>
+
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="!px-6 !pb-4 gap-2">
+    <button mat-button type="button" (click)="dialogRef.close()">
+      {{ 'common.cancel' | transloco }}
+    </button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="clientForm.invalid">
+      {{ 'clients.dialog.submit' | transloco }}
+    </button>
+  </mat-dialog-actions>
+
+</form>
