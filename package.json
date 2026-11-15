@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "dev": "node scripts/dev-start.js && concurrently \"ng serve\" \"json-server --watch db.json --port 3000\" \"npm run proxy\"",
+    "dev": "node scripts/dev-start.js && concurrently \"ng serve\" \"npm run backend-dev\" \"npm run mock-server\"",
+    "dev:frontend": "node scripts/dev-start.js && ng serve",
+    "dev:full": "node scripts/dev-start.js && concurrently \"ng serve\" \"npm run backend-dev\" \"npm run mock-server\"",
+    "dev:fast": "node scripts/dev-start.js && concurrently \"ng serve\" \"npm run backend-dev-fast\" \"npm run mock-server\"",
+    "backend-dev": "npm --prefix backend run dev",
+    "backend-dev-fast": "SKIP_TELEGRAM_INIT=true npm --prefix backend run dev",
     "proxy": "npm --prefix backend run dev",
     "start": "ng serve",
     "build": "ng build",

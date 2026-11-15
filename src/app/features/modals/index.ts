@@ -6,3 +6,4 @@ export { EditMotorcycleDialogComponent } from './edit-motorcycle-dialog/edit-mot
 export { EditClientDialogComponent } from './edit-client-dialog/edit-client-dialog';
 export { AddInventoryItemDialogComponent } from './add-inventory-item-dialog/add-inventory-item-dialog';
 export { AddEventDialogComponent } from './add-event-dialog/add-event-dialog';
+export { TelegramFormsDialogComponent } from './telegram-forms-dialog/telegram-forms-dialog';

@@ -1,24 +1,104 @@
 /**
- * Telegram Bot Handler
+ * Telegram Bot Handler with Menu System & Forms
  * 
- * Initializes and manages Telegram bot using node-telegram-bot-api.
- * Responds to /start command with success message.
- * Generates QR code as image file.
- * Logs all messages to console for debugging.
+ * Features:
+ * - Main menu with service categories
+ * - Multi-step forms for collecting user information
+ * - Session management for user state tracking
+ * - Admin notifications when forms are submitted
+ * - Navigation between menu and forms
  */
 
 import TelegramBot from 'node-telegram-bot-api';
-import QRCode from 'qrcode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 
+// ─── Types ────────────────────────────────────────────────────────────────
+
+type DialogState = 
+  | 'main_menu'
+  | 'service_selected'
+  | 'asking_service_details'
+  | 'asking_bike_brand'
+  | 'asking_phone'
+  | 'form_complete';
+
+interface UserSession {
+  userId: number;
+  chatId: number;
+  userName: string;
+  state: DialogState;
+  selectedService: string | null;
+  serviceDetails: string | null;
+  bikeBrand: string | null;
+  phone: string | null;
+  createdAt: Date;
+}
+
+interface ServiceCategory {
+  id: string;
+  name: string;
+  icon: string;
+  requiresDetails: boolean;
+}
+
+// ─── Config ───────────────────────────────────────────────────────────────
+
+const SERVICE_CATEGORIES: ServiceCategory[] = [
+  {
+    id: 'maintenance',
+    name: '🔧 Техническое обслуживание',
+    icon: '🔧',
+    requiresDetails: true,
+  },
+  {
+    id: 'repair',
+    name: '🔩 Ремонт мотоциклов',
+    icon: '🔩',
+    requiresDetails: true,
+  },
+  {
+    id: 'painting',
+    name: '🎨 Кузовные работы',
+    icon: '🎨',
+    requiresDetails: true,
+  },
+  {
+    id: 'equipment',
+    name: '📡 Установка/доработка оборудования',
+    icon: '📡',
+    requiresDetails: true,
+  },
+  {
+    id: 'preparation',
+    name: '⚙️ Подготовка к сезону',
+    icon: '⚙️',
+    requiresDetails: false,
+  },
+  {
+    id: 'wheel_repair',
+    name: '🛞 Ремонт дисков',
+    icon: '🛞',
+    requiresDetails: false,
+  },
+  {
+    id: 'fuel_system',
+    name: '⛽ Ремонт/настройка топливной',
+    icon: '⛽',
+    requiresDetails: false,
+  },
+];
+
+// ─── Global State ─────────────────────────────────────────────────────────
+
 let bot: TelegramBot | null = null;
 let botInitializing = false;
+const userSessions = new Map<number, UserSession>();
+const submittedForms: UserSession[] = [];
 
-// Create logs directory if it doesn't exist
-// Resolve relative to the directory where this file is located (backend/src/)
-// So we get: backend/logs/
+// ─── Logging ──────────────────────────────────────────────────────────────
+
 const logsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../logs');
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
@@ -30,10 +110,8 @@ function logMessage(message: string): void {
   const timestamp = new Date().toISOString();
   const logEntry = `[${timestamp}] ${message}\n`;
   
-  // Log to console
   console.log(`[telegram-bot] ${message}`);
   
-  // Log to file
   try {
     fs.appendFileSync(logFile, logEntry, 'utf8');
   } catch (err) {
@@ -41,48 +119,241 @@ function logMessage(message: string): void {
   }
 }
 
-async function generateQRCodeImage(url: string): Promise<string | null> {
+// ─── Session Management ───────────────────────────────────────────────────
+
+function createOrGetSession(userId: number, chatId: number, userName: string): UserSession {
+  if (userSessions.has(userId)) {
+    return userSessions.get(userId)!;
+  }
+
+  const session: UserSession = {
+    userId,
+    chatId,
+    userName,
+    state: 'main_menu',
+    selectedService: null,
+    serviceDetails: null,
+    bikeBrand: null,
+    phone: null,
+    createdAt: new Date(),
+  };
+
+  userSessions.set(userId, session);
+  return session;
+}
+
+function clearSession(userId: number): void {
+  userSessions.delete(userId);
+}
+
+// ─── Menu Building ────────────────────────────────────────────────────────
+
+function buildMainMenuKeyboard(): TelegramBot.SendMessageOptions {
+  const buttons = SERVICE_CATEGORIES.map(cat => [{ text: cat.name }]);
+  
+  return {
+    reply_markup: {
+      keyboard: buttons,
+      resize_keyboard: true,
+      one_time_keyboard: false,
+    },
+  } as TelegramBot.SendMessageOptions;
+}
+
+function buildNavigationKeyboard(): TelegramBot.SendMessageOptions {
+  return {
+    reply_markup: {
+      keyboard: [[{ text: '📋 Главное меню' }]],
+      resize_keyboard: true,
+      one_time_keyboard: false,
+    },
+  } as TelegramBot.SendMessageOptions;
+}
+
+// ─── Message Handlers ─────────────────────────────────────────────────────
+
+async function handleMainMenu(chatId: number, session: UserSession): Promise<void> {
+  if (!bot) return;
+
+  const message = `
+👋 Привет, ${session.userName}!
+
+Выберите вид услуги:
+`.trim();
+
   try {
-    const qrPath = path.join(logsDir, 'telegram-bot-qr.png');
-    await QRCode.toFile(qrPath, url, {
-      errorCorrectionLevel: 'H',
-      type: 'png',
-      width: 300,
-      margin: 2,
-      color: {
-        dark: '#000000',
-        light: '#FFFFFF',
-      },
-    });
-    logMessage(`✓ QR code image generated: ${qrPath}`);
-    return qrPath;
+    await bot.sendMessage(chatId, message, buildMainMenuKeyboard());
+    session.state = 'main_menu';
   } catch (err) {
-    logMessage(`✗ Error generating QR code image: ${err}`);
-    return null;
+    logMessage(`✗ Error sending main menu to user ${session.userId}: ${err}`);
   }
 }
 
-async function getBotUsername(token: string): Promise<string | null> {
-  try {
-    const tempBot = new TelegramBot(token, { polling: false });
-    const info = await tempBot.getMe();
-    return info.username || null;
-  } catch (err) {
-    logMessage(`✗ Error getting bot info: ${err}`);
-    return null;
+async function handleServiceSelected(
+  chatId: number,
+  session: UserSession,
+  selectedText: string
+): Promise<void> {
+  if (!bot) return;
+
+  const service = SERVICE_CATEGORIES.find(s => s.name === selectedText);
+  if (!service) {
+    logMessage(`✗ Service not found for text: ${selectedText}`);
+    return;
+  }
+
+  session.selectedService = service.name;
+  session.state = 'service_selected';
+
+  if (service.requiresDetails) {
+    session.state = 'asking_service_details';
+    const message = `
+Вы выбрали: ${service.name}
+
+Пожалуйста, опишите подробнее, что нужно сделать:
+    `.trim();
+
+    try {
+      await bot.sendMessage(chatId, message, buildNavigationKeyboard());
+    } catch (err) {
+      logMessage(`✗ Error asking service details: ${err}`);
+    }
+  } else {
+    // Skip details, go directly to bike brand
+    session.state = 'asking_bike_brand';
+    const message = `
+Вы выбрали: ${service.name}
+
+Укажите марку и модель вашего мотоцикла:
+    `.trim();
+
+    try {
+      await bot.sendMessage(chatId, message, buildNavigationKeyboard());
+    } catch (err) {
+      logMessage(`✗ Error asking bike brand: ${err}`);
+    }
   }
 }
+
+async function handleServiceDetails(
+  chatId: number,
+  session: UserSession,
+  details: string
+): Promise<void> {
+  if (!bot) return;
+
+  session.serviceDetails = details;
+  session.state = 'asking_bike_brand';
+
+  const message = `
+✓ Спасибо!
+
+Теперь укажите марку и модель вашего мотоцикла:
+  `.trim();
+
+  try {
+    await bot.sendMessage(chatId, message, buildNavigationKeyboard());
+  } catch (err) {
+    logMessage(`✗ Error asking bike brand: ${err}`);
+  }
+}
+
+async function handleBikeBrand(
+  chatId: number,
+  session: UserSession,
+  brand: string
+): Promise<void> {
+  if (!bot) return;
+
+  session.bikeBrand = brand;
+  session.state = 'asking_phone';
+
+  const message = `
+✓ Спасибо!
+
+Поделитесь своим номером телефона:
+  `.trim();
+
+  try {
+    await bot.sendMessage(chatId, message, buildNavigationKeyboard());
+  } catch (err) {
+    logMessage(`✗ Error asking phone: ${err}`);
+  }
+}
+
+async function handlePhoneSubmitted(
+  chatId: number,
+  session: UserSession,
+  phone: string
+): Promise<void> {
+  if (!bot) return;
+
+  session.phone = phone;
+  session.state = 'form_complete';
+
+  // Save the submitted form
+  submittedForms.push({ ...session });
+
+  const message = `
+✓ Спасибо за обращение!
+
+Ваша заявка отправлена.
+Свяжемся с Вами в ближайшее время.
+
+Детали заявки:
+• Услуга: ${session.selectedService}
+${session.serviceDetails ? `• Детали: ${session.serviceDetails}` : ''}
+• Мотоцикл: ${session.bikeBrand}
+• Телефон: ${session.phone}
+  `.trim();
+
+  try {
+    await bot.sendMessage(chatId, message, buildMainMenuKeyboard());
+    logMessage(`✓ Form submitted by user ${session.userId} (${session.userName}): ${JSON.stringify({
+      service: session.selectedService,
+      details: session.serviceDetails,
+      bike: session.bikeBrand,
+      phone: session.phone,
+    })}`);
+
+    // Reset session state
+    session.state = 'main_menu';
+    session.selectedService = null;
+    session.serviceDetails = null;
+    session.bikeBrand = null;
+    session.phone = null;
+  } catch (err) {
+    logMessage(`✗ Error sending form completion message: ${err}`);
+  }
+}
+
+async function handleBackToMenu(chatId: number, session: UserSession): Promise<void> {
+  // Reset session state
+  session.state = 'main_menu';
+  session.selectedService = null;
+  session.serviceDetails = null;
+  session.bikeBrand = null;
+  session.phone = null;
+
+  await handleMainMenu(chatId, session);
+}
+
+
+// ─── Public API ───────────────────────────────────────────────────────────
 
 export async function initTelegramBot(token: string): Promise<TelegramBot | null> {
-  // Prevent multiple concurrent initialization attempts
   if (botInitializing) {
     logMessage('⚠ Bot initialization already in progress, waiting...');
-    // Wait for bot to be ready (with timeout)
-    const maxWait = 5000; // 5 seconds
-    const startTime = Date.now();
-    while (botInitializing && Date.now() - startTime < maxWait) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    // Use Promise.race to avoid indefinite waiting with a timeout
+    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    const checkInterval = async () => {
+      for (let i = 0; i < 50; i++) {  // Max 5 seconds (50 * 100ms)
+        if (!botInitializing) break;
+        await sleep(100);
+      }
+    };
+    await checkInterval();
+    
     if (bot) {
       return bot;
     }
@@ -106,72 +377,67 @@ export async function initTelegramBot(token: string): Promise<TelegramBot | null
       const chatId = msg.chat.id;
       const userId = msg.from?.id;
       const userName = msg.from?.first_name || 'Unknown';
-      
-      logMessage(`/start command received from user ${userId} (${userName})`);
-      
-      try {
-        // Send welcome message with /start button
-        const keyboard = {
-          reply_markup: {
-            keyboard: [[{ text: '/start' }]],
-            resize_keyboard: true,
-            one_time_keyboard: false,
-          },
-        };
 
-        await bot!.sendMessage(
-          chatId,
-          '👋 Добро пожаловать! Нажмите кнопку ниже для начала работы:',
-          keyboard as TelegramBot.SendMessageOptions
-        );
-        
-        logMessage(`✓ Welcome message with /start button sent to user ${userId}`);
-      } catch (err: unknown) {
-        logMessage(`✗ Error sending welcome message to user ${userId}: ${err}`);
-      }
+      if (!userId) return;
+
+      logMessage(`/start command received from user ${userId} (${userName})`);
+
+      const session = createOrGetSession(userId, chatId, userName);
+      await handleMainMenu(chatId, session);
     });
 
-    // Handle any new message
-    bot.on('message', (msg: TelegramBot.Message) => {
+    // Handle any message
+    bot.on('message', async (msg: TelegramBot.Message) => {
       const chatId = msg.chat.id;
       const userId = msg.from?.id;
-      const userName = msg.from?.first_name || 'Unknown';
-      const text = msg.text || '(no text)';
+      const text = msg.text || '';
 
-      // Skip if it's a /start command (already handled above)
-      if (text === '/start') {
+      if (!userId || !text || text.startsWith('/')) {
         return;
       }
 
-      logMessage(`📨 Message from user ${userId} (${userName}): "${text}"`);
+      logMessage(`📨 Message from user ${userId}: "${text}"`);
 
-      // For any other message, suggest /start command with keyboard button
-      const keyboard = {
-        reply_markup: {
-          keyboard: [[{ text: '/start' }]],
-          resize_keyboard: true,
-          one_time_keyboard: false, // Keep button visible until explicitly removed
-        },
-      };
+      const session = createOrGetSession(userId, chatId, msg.from?.first_name || 'Unknown');
 
-      bot!.sendMessage(
-        chatId,
-        '❓ Не понимаю команду. Пожалуйста, нажмите кнопку ниже:',
-        keyboard as TelegramBot.SendMessageOptions
-      )
-        .then(() => {
-          logMessage(`✓ /start button suggestion sent to user ${userId}`);
-        })
-        .catch((err: unknown) => {
-          logMessage(`✗ Error sending /start button to user ${userId}: ${err}`);
-        });
+      // Handle "Главное меню" (Back to Main Menu)
+      if (text === '📋 Главное меню') {
+        await handleBackToMenu(chatId, session);
+        return;
+      }
+
+      // Route based on current state
+      switch (session.state) {
+        case 'main_menu':
+          const service = SERVICE_CATEGORIES.find(s => s.name === text);
+          if (service) {
+            await handleServiceSelected(chatId, session, text);
+          } else {
+            logMessage(`⚠ Unknown service selection: ${text}`);
+          }
+          break;
+
+        case 'asking_service_details':
+          await handleServiceDetails(chatId, session, text);
+          break;
+
+        case 'asking_bike_brand':
+          await handleBikeBrand(chatId, session, text);
+          break;
+
+        case 'asking_phone':
+          await handlePhoneSubmitted(chatId, session, text);
+          break;
+
+        default:
+          logMessage(`⚠ Unexpected state for user ${userId}: ${session.state}`);
+      }
     });
 
     // Handle errors
     bot.on('polling_error', (error: Error) => {
       logMessage(`✗ Polling error: ${error.message}`);
       
-      // If it's a 409 Conflict error (already polling), try to recover
       if (error.message.includes('409') || error.message.includes('terminated by other getUpdates')) {
         logMessage('⚠ Detected multiple polling instances. This may happen during development.');
         logMessage('→ Status endpoint: GET /api/telegram/status');
@@ -181,34 +447,6 @@ export async function initTelegramBot(token: string): Promise<TelegramBot | null
     });
 
     logMessage('✓ Telegram bot initialized successfully');
-
-    // Generate QR code with real bot username
-    setImmediate(async () => {
-      try {
-        console.log('[telegram-bot] Starting QR code generation...');
-        
-        // Get real bot username from Telegram API
-        const botUsername = await getBotUsername(token);
-        console.log('[telegram-bot] Bot username retrieved:', botUsername);
-        
-        if (!botUsername) {
-          console.warn('[telegram-bot] ⚠ Could not get bot username, using fallback');
-          return;
-        }
-        
-        const botUrl = `https://t.me/${botUsername}`;
-        console.log('[telegram-bot] Bot URL:', botUrl);
-        
-        // Generate QR code image
-        const qrImagePath = await generateQRCodeImage(botUrl);
-        
-        if (qrImagePath) {
-          console.log('[telegram-bot] ✓ QR code image generated and available via /api/telegram/qr');
-        }
-      } catch (err) {
-        console.error(`[telegram-bot] ✗ Error with QR code generation:`, err);
-      }
-    });
 
     return bot;
   } catch (err) {
@@ -240,4 +478,14 @@ export async function stopTelegramBot(): Promise<void> {
       botInitializing = false;
     }
   }
+}
+
+// ─── Getters for Admin Dashboard ──────────────────────────────────────────
+
+export function getSubmittedForms(): UserSession[] {
+  return submittedForms;
+}
+
+export function clearSubmittedForms(): void {
+  submittedForms.length = 0;
 }

@@ -11,6 +11,7 @@ import { EditClientDialogComponent } from './edit-client-dialog/edit-client-dial
 import { AddInventoryItemDialogComponent } from './add-inventory-item-dialog/add-inventory-item-dialog';
 import { AddEventDialogComponent } from './add-event-dialog/add-event-dialog';
 import { TelegramQrDialogComponent } from './telegram-qr-dialog/telegram-qr-dialog';
+import { TelegramFormsDialogComponent } from './telegram-forms-dialog/telegram-forms-dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -147,6 +148,18 @@ export class ModalsService {
   openTelegramQr(): void {
     this.#dialog.open(TelegramQrDialogComponent, {
       width: '520px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      disableClose: false,
+    });
+  }
+
+  /**
+   * Opens the dialog listing forms submitted via the Telegram bot.
+   */
+  openTelegramForms(): void {
+    this.#dialog.open(TelegramFormsDialogComponent, {
+      width: '540px',
       maxWidth: '95vw',
       autoFocus: false,
       disableClose: false,

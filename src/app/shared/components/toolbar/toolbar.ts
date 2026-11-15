@@ -13,6 +13,7 @@ import { ThemeSwitch } from '../theme-switch/theme-switch';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { OrdersStore } from '../../../features/orders/orders.store';
+import { TelegramStore } from '../../../features/telegram/telegram.store';
 import { ModalsService } from '../../../features/modals/modals.service';
 
 // ─── Toolbar ──────────────────────────────────────────────────────────────
@@ -41,6 +42,7 @@ export class Toolbar {
   readonly auth         = inject(AuthService);
   readonly #router      = inject(Router);
   readonly ordersStore  = inject(OrdersStore);
+  readonly telegramStore = inject(TelegramStore);
   readonly modalsService = inject(ModalsService);
 
   /** Controls the mobile nav drawer */
@@ -64,6 +66,10 @@ export class Toolbar {
 
   openTelegramQr(): void {
     this.modalsService.openTelegramQr();
+  }
+
+  openTelegramForms(): void {
+    this.modalsService.openTelegramForms();
   }
 
   signOut(): void {

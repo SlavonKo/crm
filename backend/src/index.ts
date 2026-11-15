@@ -18,8 +18,9 @@ import cors from 'cors';
 import axios, { AxiosError } from 'axios';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import * as fs from 'fs';
 import { fileURLToPath } from 'url';
-import { initTelegramBot, stopTelegramBot, getTelegramBot } from './telegram-bot.js';
+import { initTelegramBot, stopTelegramBot, getTelegramBot, getSubmittedForms, clearSubmittedForms } from './telegram-bot.js';
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 
@@ -174,22 +175,16 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', service: 'ai-proxy' });
 });
 
-// Telegram QR code endpoint with caching
+// Telegram QR code endpoint - serve static file from assets
 app.get('/api/telegram/qr', (_req: Request, res: Response) => {
   try {
-    // Resolve path relative to backend/src/
-    // __dirname in dev is backend/src/, in prod is backend/dist/
-    // So we want: backend/logs/telegram-bot-qr.png
-    const qrPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../logs/telegram-bot-qr.png');
-    
-    // Set cache headers: cache for 1 hour
-    res.set('Cache-Control', 'public, max-age=3600');
-    res.set('ETag', 'strong');
-    
+    const qrPath = path.resolve(__dirname, '../../src/assets/icons/telegram-bot-qr.png');
+    res.set('Cache-Control', 'public, max-age=86400, immutable');
+    res.set('Content-Type', 'image/png');
     res.sendFile(qrPath);
   } catch (err) {
-    console.error('[telegram-qr] Error serving QR code:', err);
-    res.status(404).json({ error: 'QR code not found. Make sure Telegram bot is initialized.' });
+    console.error('[telegram-qr] Error:', err);
+    res.status(500).json({ error: 'Failed to load QR code' });
   }
 });
 
@@ -200,6 +195,36 @@ app.get('/api/telegram/status', (_req: Request, res: Response) => {
   res.json({
     initialized: botInstance !== null,
     hasToken: !!TELEGRAM_TOKEN,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Telegram submitted forms endpoint (for admin dashboard)
+app.get('/api/telegram/forms', (_req: Request, res: Response) => {
+  const forms = getSubmittedForms();
+  
+  res.json({
+    count: forms.length,
+    forms: forms.map(form => ({
+      userId: form.userId,
+      userName: form.userName,
+      service: form.selectedService,
+      serviceDetails: form.serviceDetails,
+      bikeBrand: form.bikeBrand,
+      phone: form.phone,
+      submittedAt: form.createdAt,
+    })),
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Clear submitted forms (after admin processes them)
+app.post('/api/telegram/forms/clear', (_req: Request, res: Response) => {
+  const countBefore = getSubmittedForms().length;
+  clearSubmittedForms();
+  
+  res.json({
+    message: `Cleared ${countBefore} form(s)`,
     timestamp: new Date().toISOString(),
   });
 });
@@ -223,19 +248,24 @@ app.listen(PORT, () => {
   console.log(`[ai-proxy]   GROQ_MODEL=${GROQ_MODEL}`);
 });
 
-// Initialize Telegram bot if token is provided
-if (TELEGRAM_TOKEN) {
-  initTelegramBot(TELEGRAM_TOKEN)
-    .then((botInstance) => {
-      if (!botInstance) {
-        console.warn('[telegram-bot] ⚠ Failed to initialize Telegram bot (token may be invalid)');
-        console.warn('[telegram-bot] QR code endpoint will return 404 until bot is restarted with valid token');
-      }
-    })
-    .catch((err) => {
-      console.error('[telegram-bot] Failed to initialize:', err.message);
-      process.exit(1);
-    });
+// Initialize Telegram bot if token is provided (async, non-blocking)
+// Skip during dev if env var is set (faster startup)
+const skipTelegramInit = process.env['SKIP_TELEGRAM_INIT'] === 'true';
+
+if (TELEGRAM_TOKEN && !skipTelegramInit) {
+  // Fire and forget - don't wait for bot initialization
+  setImmediate(() => {
+    initTelegramBot(TELEGRAM_TOKEN)
+      .then((botInstance) => {
+        if (!botInstance) {
+          console.warn('[telegram-bot] ⚠ Failed to initialize Telegram bot (token may be invalid)');
+          console.warn('[telegram-bot] QR code endpoint will return 404 until bot is restarted with valid token');
+        }
+      })
+      .catch((err) => {
+        console.error('[telegram-bot] Failed to initialize:', err.message);
+      });
+  });
 }
 
 // Graceful shutdown

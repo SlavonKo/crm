@@ -78,6 +78,25 @@ mat-toolbar.toolbar {
   }
 }
 
+// ── Telegram forms icon — vibrate every 3s (1s shake + 2s still) ─────────────
+
+@keyframes telegram-vibrate {
+  0%   { transform: translateX(0) rotate(0); }
+  8%   { transform: translateX(-2px) rotate(-6deg); }
+  17%  { transform: translateX(2px) rotate(6deg); }
+  25%  { transform: translateX(-2px) rotate(-6deg); }
+  33%  { transform: translateX(0) rotate(0); }
+  /* 33% → 100% (2 секунды) иконка нерухома, потім цикл повторюється */
+  100% { transform: translateX(0) rotate(0); }
+}
+
+mat-toolbar.toolbar button[mat-icon-button] .telegram-forms-icon {
+  &.telegram-forms-icon--active {
+    animation: telegram-vibrate 3s ease-in-out infinite;
+    color: #3b82f6; // blue-500
+  }
+}
+
 // ── Mobile drawer nav links ───────────────────────────────────────────────────
 
 .drawer-link {

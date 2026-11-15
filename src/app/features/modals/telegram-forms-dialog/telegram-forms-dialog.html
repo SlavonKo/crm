@@ -1,0 +1,85 @@
+<h2 mat-dialog-title class="!text-xl !font-bold flex items-center gap-2">
+  <mat-icon class="text-blue-500">smartphone</mat-icon>
+  Заявки з Telegram-бота
+  @if (telegramStore.count() > 0) {
+    <span class="ml-auto bg-blue-500 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+      {{ telegramStore.count() }}
+    </span>
+  }
+</h2>
+
+<mat-dialog-content class="!max-h-[70vh] !min-w-[min(520px,92vw)]">
+  @if (telegramStore.count() === 0) {
+    <div class="flex flex-col items-center gap-3 py-10 text-slate-400">
+      <mat-icon class="!text-5xl !w-12 !h-12">inbox</mat-icon>
+      <p class="text-sm">Нових заявок немає</p>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-3 py-2">
+      @for (form of telegramStore.forms(); track $index) {
+        <div
+          class="rounded-xl border border-slate-200 dark:border-slate-700
+                 bg-slate-50 dark:bg-slate-800/50 p-3"
+        >
+          <!-- Ім'я + час звернення -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <mat-icon class="!w-4 !h-4 !text-base text-blue-500">person</mat-icon>
+            <span class="font-semibold text-sm text-slate-800 dark:text-slate-100">
+              {{ form.userName }}
+            </span>
+            @if (form.submittedAt) {
+              <span class="ml-auto text-[11px] text-slate-400">
+                {{ form.submittedAt | date:'dd.MM.yyyy HH:mm' }}
+              </span>
+            }
+          </div>
+
+          <!-- Послуга -->
+          @if (form.service) {
+            <div class="flex items-start gap-2 mt-2 text-sm text-slate-600 dark:text-slate-300">
+              <mat-icon class="!w-4 !h-4 !text-base text-slate-400 mt-0.5">build</mat-icon>
+              <span>{{ form.service }}</span>
+            </div>
+          }
+
+          <!-- Деталі послуги -->
+          @if (form.serviceDetails) {
+            <div class="flex items-start gap-2 mt-1 text-sm text-slate-600 dark:text-slate-300">
+              <mat-icon class="!w-4 !h-4 !text-base text-slate-400 mt-0.5">description</mat-icon>
+              <span class="whitespace-pre-wrap">{{ form.serviceDetails }}</span>
+            </div>
+          }
+
+          <!-- Мотоцикл + телефон -->
+          <div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-500 dark:text-slate-400">
+            @if (form.bikeBrand) {
+              <span class="flex items-center gap-1">
+                <mat-icon class="!w-3.5 !h-3.5 !text-sm">two_wheeler</mat-icon>
+                {{ form.bikeBrand }}
+              </span>
+            }
+            @if (form.phone) {
+              <a
+                [href]="'tel:' + form.phone"
+                class="flex items-center gap-1 text-indigo-500 hover:underline"
+              >
+                <mat-icon class="!w-3.5 !h-3.5 !text-sm">call</mat-icon>
+                {{ form.phone }}
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!px-6 !pb-4 gap-2">
+  @if (telegramStore.count() > 0) {
+    <button mat-stroked-button (click)="clearAll()" class="text-rose-600">
+      <mat-icon>delete_sweep</mat-icon>
+      <span>Очистити оброблені</span>
+    </button>
+  }
+  <button mat-button (click)="close()">Закрити</button>
+</mat-dialog-actions>

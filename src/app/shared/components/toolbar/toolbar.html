@@ -49,6 +49,23 @@
     <!-- Right side controls -->
     <div class="flex items-center gap-1 shrink-0">
 
+      <!-- Telegram: нові заявки з бота (видно лише коли є заявки) -->
+      @if (telegramStore.hasForms()) {
+        <button
+          mat-icon-button
+          (click)="openTelegramForms()"
+          [matTooltip]="'Заявки з Telegram-бота'"
+          aria-label="Заявки з Telegram-бота"
+          class="text-slate-500 hover:text-blue-500"
+          [matBadge]="telegramStore.count() > 0 ? telegramStore.count() : null"
+          matBadgeColor="primary"
+          matBadgeSize="small"
+          matBadgeOverlap="true"
+        >
+          <mat-icon class="telegram-forms-icon telegram-forms-icon--active">smartphone</mat-icon>
+        </button>
+      }
+
       <!-- Alarm: найближчі дати замовлень -->
       <button
         mat-icon-button

@@ -1,0 +1,443 @@
+[2026-11-15T00:00:08.235Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:00:08.237Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:00:08.460Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:02:29.992Z] Stopping bot polling...
+[2026-11-15T00:02:29.997Z] Stopping bot polling...
+[2026-11-15T00:02:29.998Z] ✓ Bot stopped
+[2026-11-15T00:03:02.620Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:03:02.621Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:03:02.831Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:03:28.323Z] Stopping bot polling...
+[2026-11-15T00:03:28.324Z] Stopping bot polling...
+[2026-11-15T00:03:28.324Z] ✓ Bot stopped
+[2026-11-15T00:03:35.103Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:03:35.104Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:03:35.327Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:04:16.553Z] Stopping bot polling...
+[2026-11-15T00:04:16.554Z] Stopping bot polling...
+[2026-11-15T00:04:16.554Z] ✓ Bot stopped
+[2026-11-15T00:04:27.473Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:04:27.474Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:04:27.723Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:05:09.955Z] Stopping bot polling...
+[2026-11-15T00:05:09.957Z] Stopping bot polling...
+[2026-11-15T00:05:09.958Z] ✓ Bot stopped
+[2026-11-15T00:05:17.958Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:05:17.959Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:05:18.180Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:05:49.647Z] Stopping bot polling...
+[2026-11-15T00:05:55.526Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:05:55.527Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:05:55.677Z] Starting QR code generation...
+[2026-11-15T00:05:55.897Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:05:55.897Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:06:06.503Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:06:06.504Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:06:06.605Z] Starting QR code generation...
+[2026-11-15T00:06:06.783Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:06:06.784Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:06:27.434Z] Stopping bot polling...
+[2026-11-15T00:06:27.435Z] ✓ Bot stopped
+[2026-11-15T00:06:37.766Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:06:37.767Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:06:37.868Z] Starting QR code generation...
+[2026-11-15T00:06:38.061Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:06:38.061Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:07:08.370Z] Stopping bot polling...
+[2026-11-15T00:07:08.374Z] Stopping bot polling...
+[2026-11-15T00:07:08.375Z] ✓ Bot stopped
+[2026-11-15T00:08:18.483Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:08:18.484Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:08:18.584Z] Starting QR code generation...
+[2026-11-15T00:08:18.777Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:08:18.778Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:10:26.831Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:10:26.853Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:10:26.954Z] Starting QR code generation...
+[2026-11-15T00:10:27.138Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:10:27.138Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:10:30.262Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:30.263Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:30.263Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:30.263Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:30.263Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:33.619Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:33.620Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:33.620Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:33.621Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:33.622Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:37.169Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:37.169Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:37.170Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:37.170Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:37.171Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:40.525Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:40.525Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:40.526Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:40.526Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:40.527Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:44.078Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:44.079Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:44.079Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:44.080Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:44.080Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:47.441Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:47.442Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:47.442Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:47.442Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:47.443Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:50.986Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:50.986Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:50.987Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:50.987Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:50.988Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:54.340Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:54.340Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:54.341Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:54.341Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:54.341Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:10:57.887Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:10:57.888Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:10:57.889Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:10:57.889Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:10:57.889Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:01.239Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:01.240Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:01.241Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:01.241Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:01.242Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:04.801Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:04.810Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:04.811Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:04.812Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:04.812Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:08.268Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:08.269Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:08.270Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:08.270Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:08.270Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:11.803Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:11.803Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:11.803Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:11.804Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:11.804Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:15.153Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:15.154Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:15.154Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:15.154Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:15.155Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:18.717Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:18.717Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:18.718Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:18.718Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:18.718Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:22.069Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:22.069Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:22.070Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:22.070Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:22.070Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:25.014Z] Stopping bot polling...
+[2026-11-15T00:11:25.031Z] Stopping bot polling...
+[2026-11-15T00:11:25.616Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:25.617Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:25.617Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:25.618Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:25.618Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:25.618Z] ✓ Bot stopped
+[2026-11-15T00:11:27.001Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:11:27.003Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:11:27.102Z] Starting QR code generation...
+[2026-11-15T00:11:27.292Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:11:27.292Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:11:30.774Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:11:30.775Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:11:30.876Z] Starting QR code generation...
+[2026-11-15T00:11:31.056Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:11:31.057Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:11:34.162Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:34.163Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:34.163Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:34.164Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:34.165Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:37.534Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:37.534Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:37.535Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:37.535Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:37.536Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:41.105Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:41.105Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:41.105Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:41.106Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:41.106Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:44.468Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:44.469Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:44.469Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:44.469Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:44.470Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:48.057Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:48.059Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:48.059Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:48.060Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:48.060Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:51.415Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:51.415Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:51.415Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:51.416Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:51.416Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:51.656Z] Stopping bot polling...
+[2026-11-15T00:11:51.657Z] Stopping bot polling...
+[2026-11-15T00:11:51.657Z] ✓ Bot stopped
+[2026-11-15T00:11:53.058Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:11:53.059Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:11:53.159Z] Starting QR code generation...
+[2026-11-15T00:11:53.356Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:11:53.356Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:11:56.587Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:11:56.588Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:11:56.588Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:11:56.588Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:11:56.588Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:11:56.589Z] ✓ Bot stopped
+[2026-11-15T00:11:57.769Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:11:57.770Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:11:57.871Z] Starting QR code generation...
+[2026-11-15T00:11:58.048Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:11:58.049Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:12:00.965Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:00.965Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:00.965Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:00.966Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:00.966Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:04.531Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:04.532Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:04.533Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:04.533Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:04.533Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:04.882Z] Stopping bot polling...
+[2026-11-15T00:12:04.883Z] Stopping bot polling...
+[2026-11-15T00:12:04.883Z] ✓ Bot stopped
+[2026-11-15T00:12:20.225Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:12:20.226Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:12:20.327Z] Starting QR code generation...
+[2026-11-15T00:12:20.805Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:12:20.805Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:12:23.990Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:23.990Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:23.991Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:23.991Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:23.991Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:27.346Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:27.346Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:27.347Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:27.347Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:27.347Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:30.901Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:30.901Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:30.902Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:30.902Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:30.902Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:34.290Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:34.291Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:34.292Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:34.293Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:34.294Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:37.890Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:37.891Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:37.892Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:37.892Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:37.893Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:41.248Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:41.248Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:41.249Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:41.249Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:41.249Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:44.795Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:44.796Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:44.796Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:44.796Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:44.797Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:48.151Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:48.152Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:48.153Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:48.153Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:48.154Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:51.697Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:51.698Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:51.698Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:51.699Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:51.699Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:55.058Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:55.058Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:55.059Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:55.059Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:55.059Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:12:58.599Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:12:58.600Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:12:58.600Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:12:58.600Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:12:58.600Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:01.960Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:01.961Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:01.961Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:01.962Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:01.962Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:05.572Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:05.573Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:05.573Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:05.574Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:05.574Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:08.929Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:08.929Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:08.930Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:08.930Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:08.931Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:12.479Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:12.480Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:12.480Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:12.481Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:12.481Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:15.841Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:15.842Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:15.842Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:15.843Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:15.843Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:19.383Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:19.383Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:19.384Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:19.384Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:19.385Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:22.737Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:22.738Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:22.738Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:22.738Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:22.738Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:26.292Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:26.292Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:26.292Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:26.293Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:26.293Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:29.645Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:29.646Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:29.646Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:29.646Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:29.647Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:33.605Z] ✗ Polling error: ETELEGRAM: 409 Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+[2026-11-15T00:13:33.606Z] ⚠ Detected multiple polling instances. This may happen during development.
+[2026-11-15T00:13:33.607Z] → Status endpoint: GET /api/telegram/status
+[2026-11-15T00:13:33.607Z] → Check bot status via frontend before restarting.
+[2026-11-15T00:13:33.607Z] → If problem persists, restart the server with: npm run dev
+[2026-11-15T00:13:36.478Z] Stopping bot polling...
+[2026-11-15T00:13:36.480Z] Stopping bot polling...
+[2026-11-15T00:13:36.480Z] ✓ Bot stopped
+[2026-11-15T00:14:39.613Z] /start command received from user 1192835920 (Вячеслав)
+[2026-11-15T00:14:48.201Z] 📨 Message from user 1192835920: "🔧 Техническое обслуживание"
+[2026-11-15T00:15:00.683Z] 📨 Message from user 1192835920: "Замена масла"
+[2026-11-15T00:15:10.655Z] 📨 Message from user 1192835920: "Ямаха Файзер 600"
+[2026-11-15T00:15:28.001Z] 📨 Message from user 1192835920: "+380675609143"
+[2026-11-15T00:15:28.080Z] ✓ Form submitted by user 1192835920 (Вячеслав): {"service":"🔧 Техническое обслуживание","details":"Замена масла","bike":"Ямаха Файзер 600","phone":"+380675609143"}
+[2026-11-15T00:16:03.900Z] Stopping bot polling...
+[2026-11-15T00:16:10.536Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:16:10.537Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:16:10.638Z] Starting QR code generation...
+[2026-11-15T00:16:10.946Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:16:10.946Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:16:11.008Z] Stopping bot polling...
+[2026-11-15T00:16:12.131Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:16:12.132Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:16:12.273Z] Starting QR code generation...
+[2026-11-15T00:16:12.509Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:16:12.510Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:16:13.853Z] Stopping bot polling...
+[2026-11-15T00:16:19.084Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:16:19.085Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:16:19.186Z] Starting QR code generation...
+[2026-11-15T00:16:19.355Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:16:19.356Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:16:21.199Z] Stopping bot polling...
+[2026-11-15T00:16:26.982Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:16:26.983Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:16:27.084Z] Starting QR code generation...
+[2026-11-15T00:16:27.266Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:16:27.267Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:16:40.797Z] Stopping bot polling...
+[2026-11-15T00:16:40.798Z] Stopping bot polling...
+[2026-11-15T00:16:40.799Z] ✓ Bot stopped
+[2026-11-15T00:16:52.199Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:16:52.201Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:16:52.300Z] Starting QR code generation...
+[2026-11-15T00:16:52.495Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:16:52.495Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:17:23.535Z] Stopping bot polling...
+[2026-11-15T00:17:26.812Z] Stopping bot polling...
+[2026-11-15T00:17:33.043Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:17:33.044Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:17:33.144Z] Starting QR code generation...
+[2026-11-15T00:17:33.332Z] ✓ QR code image generated: /Users/evgeniakozyreva/Documents/projects/crm/backend/logs/telegram-bot-qr.png
+[2026-11-15T00:17:33.332Z] ✓ QR code image generated and available via /api/telegram/qr
+[2026-11-15T00:22:09.176Z] Stopping bot polling...
+[2026-11-15T00:22:13.116Z] ✓ Bot stopped
+[2026-11-15T00:22:13.895Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:22:13.896Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:22:14.123Z] ✓ QR code cached for /api/telegram/qr
+[2026-11-15T00:22:34.390Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:22:34.392Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:22:34.599Z] ✓ QR code cached for /api/telegram/qr
+[2026-11-15T00:26:16.937Z] Stopping bot polling...
+[2026-11-15T00:26:23.990Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:26:23.991Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:26:24.238Z] ✓ QR code cached
+[2026-11-15T00:26:35.539Z] Stopping bot polling...
+[2026-11-15T00:26:41.705Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:26:41.707Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:26:41.931Z] ✓ QR code cached
+[2026-11-15T00:32:56.017Z] Stopping bot polling...
+[2026-11-15T00:32:56.050Z] ✓ Bot stopped
+[2026-11-15T00:32:57.336Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:32:57.337Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:32:57.618Z] ✓ QR code cached
+[2026-11-15T00:35:32.414Z] Stopping bot polling...
+[2026-11-15T00:35:32.893Z] ✓ Bot stopped
+[2026-11-15T00:35:34.316Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:35:34.317Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:35:41.233Z] Stopping bot polling...
+[2026-11-15T00:35:45.708Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:35:45.709Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:36:01.079Z] Stopping bot polling...
+[2026-11-15T00:36:06.784Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:36:06.785Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:37:00.251Z] Stopping bot polling...
+[2026-11-15T00:37:00.252Z] Stopping bot polling...
+[2026-11-15T00:37:00.253Z] ✓ Bot stopped
+[2026-11-15T00:37:42.195Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:37:42.196Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:38:26.958Z] Stopping bot polling...
+[2026-11-15T00:38:26.960Z] Stopping bot polling...
+[2026-11-15T00:38:26.960Z] ✓ Bot stopped
+[2026-11-15T00:39:22.508Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:39:22.509Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:40:48.904Z] Stopping bot polling...
+[2026-11-15T00:40:48.906Z] Stopping bot polling...
+[2026-11-15T00:40:48.906Z] ✓ Bot stopped
+[2026-11-15T00:42:21.804Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:42:21.806Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:45:21.975Z] Stopping bot polling...
+[2026-11-15T00:45:28.650Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:45:28.651Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:45:52.811Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:45:52.813Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:46:22.768Z] Stopping bot polling...
+[2026-11-15T00:46:23.846Z] ✓ Bot stopped
+[2026-11-15T00:46:25.256Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:46:25.257Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:46:25.953Z] Stopping bot polling...
+[2026-11-15T00:46:27.146Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:46:27.146Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:46:52.781Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:46:52.784Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:48:08.484Z] Telegram bot instance created with polling enabled
+[2026-11-15T00:48:08.485Z] ✓ Telegram bot initialized successfully
+[2026-11-15T00:48:45.528Z] 📨 Message from user 1192835920: "🔧 Техническое обслуживание"
+[2026-11-15T00:48:52.639Z] 📨 Message from user 1192835920: "Замена масла"
+[2026-11-15T00:49:02.174Z] 📨 Message from user 1192835920: "Ямаха Файзер 600"
+[2026-11-15T00:49:12.106Z] 📨 Message from user 1192835920: "+380675609143"
+[2026-11-15T00:49:12.186Z] ✓ Form submitted by user 1192835920 (Вячеслав): {"service":"🔧 Техническое обслуживание","details":"Замена масла","bike":"Ямаха Файзер 600","phone":"+380675609143"}
